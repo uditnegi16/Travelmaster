@@ -1,6 +1,6 @@
-Python version=3.12
+# Python version=3.12
 
-Package manager - Uv
+# Package manager - Uv
     Commands: 
     uv init
     uv help
