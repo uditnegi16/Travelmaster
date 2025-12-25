@@ -1,13 +1,13 @@
 Python version=3.12
 
 Package manager - Uv
-Commands: 
-uv init
-uv help
-uv venv --python 3.12
-uv add [library]
-uv pip install -r requirements.txt
-uv sync
+    Commands: 
+    uv init
+    uv help
+    uv venv --python 3.12
+    uv add [library]
+    uv pip install -r requirements.txt
+    uv sync
 
 
 Agile Framework- Jira
