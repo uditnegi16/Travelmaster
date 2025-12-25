@@ -2,6 +2,11 @@ Python version=3.12
 
 Package manager - Uv
 
+Agile Framework- Jira
+
+- Include keys in your commit messages to link them to your Jira work items. 
+- git commit -m "DEV-8 Status 1: Project Phase Finalization"
+
 ## 🧑‍💻 GitHub Workflow and Commands
 
 
