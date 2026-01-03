@@ -1,10 +1,128 @@
+The modified **TravelGuru-v5** architecture integrates the **A2A Protocol** as the communication backbone for a multi-agent system, featuring a **Google ADK Agent** and a **LangGraph Agent**. It also incorporates a dedicated **MLOps** directory to handle model productionization, tracking, and drift detection.
+
+### 📂 Modified Project Structure: TravelGuru-v5 (A2A & MLOps Edition)
+
+```text
+travelguru-v5/
+├── backend/
+│   ├── app/
+│   │   ├── api/v1/
+│   │   │   ├── a2a_endpoints.py    # A2A Message/Task/Discovery (well-known) endpoints [file:94]
+│   │   │   ├── mlops_api.py        # Model prediction and monitoring triggers [file:41]
+│   │   │   └── stripe_webhooks.py  # B2C billing and token updates [file:95]
+│   │   ├── core/
+│   │   │   ├── auth.py             # Clerk JWT & RBAC logic
+│   │   │   └── config.py           # Vertex AI & MCP environment vars
+│   │   ├── db/
+│   │   │   ├── models.py           # B2C User, Tokens, and ML Prediction logs [file:95]
+│   │   │   └── session.py
+│   │   ├── agents/
+│   │   │   ├── adk_travel/
+│   │   │   │   ├── agent.py        # Google ADK agent logic [file:94]
+│   │   │   │   └── executor.py     # A2A AgentExecutor wrapper for ADK
+│   │   │   ├── langgraph_planner/
+│   │   │   │   ├── graph.py        # LangGraph ReAct/State state machine [file:96]
+│   │   │   │   ├── tools.py        # Browser Use & MCP Tool integration [file:96]
+│   │   │   │   └── executor.py     # A2A AgentExecutor wrapper for LangGraph
+│   │   │   └── shared/
+│   │   │       ├── protocol.py     # A2A standard schemas (Message, Task, Card)
+│   │   │       └── base.py         # Base AgentExecutor class
+│   │   ├── mcp/
+│   │   │   ├── server.py           # MCP Server hosting Flight/Hotel/Weather tools [file:96]
+│   │   │   └── tools_registry.py   # Tool definitions for MCP discovery
+│   │   ├── mlops/
+│   │   │   ├── training/           # Flight Price (Regression) & Classification scripts [file:41]
+│   │   │   ├── pipelines/          # Vertex AI / Kubeflow pipeline definitions
+│   │   │   ├── evaluation/         # MLflow tracking & model validation logic
+│   │   │   └── monitoring/         # Drift detection & prediction audit scripts
+│   │   └── services/
+│   │       ├── vertex_client.py    # Vertex AI Endpoint prediction wrapper
+│   │       └── stripe_service.py   # Subscription & feature gating logic
+│   ├── main.py                     # FastAPI Entry (Mounts A2A & B2C APIs)
+│   └── requirements.txt            # Includes google-genai, langgraph, mcp, mlflow
+├── frontend/                       # Next.js 14+ (App Router)
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── chat/               # A2A-compliant streaming chat interface
+│   │   │   ├── dashboard/          # B2C Token usage & ML insights visualizations
+│   │   │   └── billing/            # Stripe pricing cards
+│   │   ├── hooks/                  # useA2A (handling async tasks/messages)
+│   │   └── lib/                    # Clerk & Stripe client-side SDKs
+├── infrastructure/
+│   ├── k8s/
+│   │   ├── agents-deployment.yaml  # Scaling ADK and LangGraph pods independently
+│   │   └── mcp-deployment.yaml     # Dedicated pod for tool servers
+│   ├── terraform/
+│   │   ├── vertex_ai.tf            # ML model endpoints & pipeline resources
+│   │   └── gke_cluster.tf          # Kubernetes cluster config
+│   └── pipelines/                  # CI/CD for ML (CT/CD)
+├── data/
+│   ├── raw/                        # Initial flights.json, hotels.json [file:42]
+│   ├── processed/                  # Feature-engineered data for training
+│   └── metadata/                   # Agent Cards (well-known-agents.json)
+└── docker-compose.yml              # Local dev orchestration (API + MCP + Redis)
+```
+
+### 🛠️ Key Implementation Components
+
+#### 1. A2A Protocol Implementation (Phase 2 & 4)
+*   **Discovery**: The `backend/data/metadata/well-known-agents.json` will host the **Agent Cards** for both the `ADKAgent` and `LangGraphAgent` so they can discover each other's capabilities.[1]
+*   **Communication**: Use synchronous **Messages** for quick flight lookups and asynchronous **Tasks** for full 7-day itinerary generations that require long-running Browser Use research.[2]
+
+#### 2. Agent Specifics (Phase 2)
+*   **Google ADK Agent**: Specialized in high-speed data retrieval from Google-native sources and the provided JSON datasets.[1]
+*   **LangGraph Agent**: Acts as the "Coordinator" or "Planner," using **Browser Use** for real-time web research and calling the **MCP Server** for internal database access.[2]
+
+#### 3. MLOps Pipeline (Phase 3 & 6)
+*   **Training**: Automates the regression model for flight prices and the recommendation engine for hotels.[3]
+*   **Tracking**: Every prediction made by the agents is logged in PostgreSQL and tracked via **MLflow** or **Vertex AI Model Monitoring** to detect performance drift.[3]
+*   **Serving**: Models are served as separate endpoints via **Vertex AI**, which the `vertex_client.py` service calls to provide data-driven insights to the agents.
+
+### 📜 Requirements.txt (Expanded)
+```text
+fastapi==0.104.0
+uvicorn==0.24.0
+google-genai==0.3.0         # For ADK Agent
+langgraph==0.1.0            # For Planner Agent
+langchain-google-genai      # LangGraph Gemini integration
+browser-use==0.1.0          # For autonomous research
+mcp==0.1.0                  # Model Context Protocol
+mlflow==2.8.0               # MLOps tracking
+clerk-sdk-python            # B2C Auth
+stripe==7.1.0               # B2C Billing
+google-cloud-aiplatform     # Vertex AI integration
+psycopg2-binary             # PostgreSQL
+DVC                         # Data Pipeline versioning
+```
+
+This structure ensures that the **TravelGuru-v5** project is not just a single chatbot, but a **B2C ecosystem** where specialized agents collaborate via a standardized protocol, supported by a professional ML lifecycle.
+
+[1](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/36958646/2de15931-583b-4adb-a07d-daec1e0cec44/A2A_Protocol_Complete_Guide.md)
+[2](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/36958646/79264182-e503-47f0-b6e0-8513952d1ff9/Advanced_Implementations.md)
+[3](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/36958646/03467ab3-65c3-4c89-b485-ced8022d56cd/Copy-of-Voyage-Analytics_-Integrating-MLOps-in-Travel-Productionization-of-ML-Systems.pdf)
+[4](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/36958646/9d5a478c-8ba8-4f7b-a4e2-51623a7f7531/B2B_to_B2C_AISAAS_Architecture.md)
+[5](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/36958646/d39694a1-9e26-4183-9a90-68b8538316c6/Project-Title.docx)
+[6](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/36958646/e85d533d-eb7d-496e-aa51-2f3f97f6d094/image.jpg)
+[7](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/36958646/09a4fbf5-4c58-45f8-ba22-b724e2fdb726/image.jpg)
+
+
+
 # Python version=3.12
+
+# UV Installation
+
+Link: https://docs.astral.sh/uv/getting-started/installation/#standalone-installer
+Powershell: powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+pip install uv
+
 
 # Package manager - Uv
     Commands: 
     uv init
     uv help
     uv venv --python 3.12
+    .venv\Scripts\activate
     uv add [library]
     uv pip install -r requirements.txt
     uv sync
@@ -182,6 +300,8 @@ source .venv/bin/activate   # (Linux/Mac)
 
 uv add django
 uv add pandas
+uv add -r requirements.txt
+
 uv sync
 ```
 
