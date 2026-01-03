@@ -1,0 +1,7 @@
+numpy
+pandas
+langchain-groq
+langchain-mcp-adapters
+mcp
+langgraph
+neo4j~=5.28.0
