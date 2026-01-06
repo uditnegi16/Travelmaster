@@ -323,7 +323,35 @@ uv sync
 > **UV is a high-performance Python package manager that combines dependency resolution, virtual environments, and reproducibility into a single fast tool.**
 
 ---
+## 📋 UV Commands – macOS Command Guide
 
+| Step  | Command                              | Purpose                      | What It Does Internally                                  | When to Use                     |
+| ----- | ------------------------------------ | ---------------------------- | -------------------------------------------------------- | ------------------------------- |
+| **1** | `brew install uv`                    | Install UV                   | Installs the `uv` binary via Homebrew                    | First-time setup                |
+| **2** | `uv --version`                       | Verify installation          | Confirms UV is correctly installed                      | After installation              |
+| **3** | `uv init`                            | Initialize project           | Creates `pyproject.toml` with project metadata           | Starting a new project          |
+| **4** | `uv venv --python 3.12`              | Create virtual environment   | Creates `.venv/` using Python 3.12                       | Before installing dependencies |
+| **5** | `source .venv/bin/activate`          | Activate virtual environment | Activates the isolated Python environment                | Before running/installing code |
+| **6** | `uv add <library>`                   | Add dependency               | Installs package and updates lock file                   | Adding new libraries            |
+| **7** | `uv pip install -r requirements.txt` | Migrate pip project          | Installs dependencies using uv resolver                  | Legacy projects                 |
+| **8** | `uv sync`                            | Sync environment             | Installs exact versions from `uv.lock`                   | Team / CI usage                 |
+| **9** | `brew uninstall uv`                  | Uninstall UV                 | Removes UV from system                                   | Cleanup (optional)              |
+
+---
+
+## 📋 UV Commands – Windows (PowerShell) Command Guide
+
+| Step  | Command                              | Purpose                      | What It Does Internally                                  | When to Use                     |
+| ----- | ------------------------------------ | ---------------------------- | -------------------------------------------------------- | ------------------------------- |
+| **1** | `winget install Astral.uv`           | Install UV                   | Installs the `uv` binary using Windows Package Manager   | First-time setup                |
+| **2** | `uv --version`                       | Verify installation          | Confirms UV is correctly installed                      | After installation              |
+| **3** | `uv init`                            | Initialize project           | Creates `pyproject.toml` with project metadata           | Starting a new project          |
+| **4** | `uv venv --python 3.12`              | Create virtual environment   | Creates `.venv\` using Python 3.12                       | Before installing dependencies |
+| **5** | `.venv\Scripts\activate`             | Activate virtual environment | Activates the isolated Python environment                | Before running/installing code |
+| **6** | `uv add <library>`                   | Add dependency               | Installs package and updates lock file                   | Adding new libraries            |
+| **7** | `uv pip install -r requirements.txt` | Migrate pip project          | Installs dependencies using uv resolver                  | Legacy projects                 |
+| **8** | `uv sync`                            | Sync environment             | Installs exact versions from `uv.lock`                   | Team / CI usage                 |
+| **9** | `winget uninstall Astral.uv`         | Uninstall UV                 | Removes UV from system                                   | Cleanup (optional)              |
 
 ----------------------
 Agile Framework- Jira
@@ -353,3 +381,4 @@ uttam's readme test
 
 
 
+All set to work on new things with new years beginnings.
