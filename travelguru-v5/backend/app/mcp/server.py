@@ -1,43 +1,140 @@
-# backend/app/mcp/server.py
-from fastmcp import FastMCP
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import os
+import requests
 
-mcp = FastMCP("TravelTools")
+from dotenv import load_dotenv
+load_dotenv()
 
-# Simple in-process tool implementations for local testing
-@mcp.tool()
-def flight_search(origin: str, dest: str, date: str) -> dict:
-    """Return a tiny mock response for flight search."""
+app = FastAPI(title="TravelGuru MCP Server")
+
+# =====================================================
+# HEALTH
+# =====================================================
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+# =====================================================
+# REQUEST MODELS
+# =====================================================
+
+class WeatherRequest(BaseModel):
+    city: str
+
+
+class FlightSearchRequest(BaseModel):
+    from_city: str
+    to_city: str
+    people: int
+
+
+class HotelSearchRequest(BaseModel):
+    city: str
+    nights: int
+    budget_level: str
+
+
+class BudgetEstimateRequest(BaseModel):
+    city: str
+    days: int
+    people: int
+
+
+# =====================================================
+# WEATHER TOOL
+# =====================================================
+
+OPENWEATHER_KEY = os.getenv("OPENWEATHERMAP_API_KEY")
+
+@app.post("/tools/weather")
+def get_weather(req: WeatherRequest):
+
+    if not OPENWEATHER_KEY:
+        raise HTTPException(status_code=500, detail="OPENWEATHERMAP_API_KEY not set")
+
+    url = "https://api.openweathermap.org/data/2.5/weather"
+    params = {
+        "q": req.city,
+        "appid": OPENWEATHER_KEY,
+        "units": "metric",
+    }
+
+    r = requests.get(url, params=params)
+    if r.status_code != 200:
+        raise HTTPException(status_code=500, detail="Weather API failed")
+
+    data = r.json()
+
     return {
-        "provider": "mock-air",
-        "origin": origin,
-        "dest": dest,
-        "date": date,
-        "results": [
-            {"flight": "MA123", "price_usd": 199},
-            {"flight": "MA456", "price_usd": 249},
+        "city": req.city,
+        "temp_c": data["main"]["temp"],
+        "condition": data["weather"][0]["description"],
+        "packing_suggestions": [
+            "Light cotton clothes",
+            "Sunscreen",
+            "Cap or hat",
         ],
     }
 
-@mcp.tool()
-def hotel_search(city: str, checkin: str, nights: int) -> dict:
-    """Return a tiny mock response for hotel search."""
+# =====================================================
+# MOCK FLIGHT SEARCH
+# =====================================================
+
+@app.post("/tools/flight_search")
+def flight_search(req: FlightSearchRequest):
     return {
-        "provider": "mock-hotels",
-        "city": city,
-        "checkin": checkin,
-        "nights": nights,
-        "options": [
-            {"name": "Hotel A", "price_usd": 120},
-            {"name": "Hotel B", "price_usd": 95},
-        ],
+        "flights": [
+            {
+                "airline": "IndiGo",
+                "price": 4500 * req.people,
+                "duration": "1h 20m",
+            },
+            {
+                "airline": "Vistara",
+                "price": 5200 * req.people,
+                "duration": "1h 15m",
+            },
+        ]
     }
 
-@mcp.tool()
-def get_weather(city: str) -> dict:
-    """Return a tiny mock weather response."""
-    return {"city": city, "forecast": "sunny", "temp_c": 28}
+# =====================================================
+# MOCK HOTEL SEARCH
+# =====================================================
 
-if __name__ == "__main__":
-    # For local dev run as HTTP server on port 8001
-    # In production you can containerize and expose /mcp endpoint
-    mcp.run(transport="http", host="0.0.0.0", port=8001)
+@app.post("/tools/hotel_search")
+def hotel_search(req: HotelSearchRequest):
+    return {
+        "hotels": [
+            {
+                "name": "Sea Breeze Resort",
+                "price_per_night": 2200,
+                "rating": 4.2,
+            },
+            {
+                "name": "Palm Stay Inn",
+                "price_per_night": 1800,
+                "rating": 3.9,
+            },
+        ]
+    }
+
+# =====================================================
+# MOCK BUDGET ESTIMATE
+# =====================================================
+
+@app.post("/tools/budget_estimate")
+def budget_estimate(req: BudgetEstimateRequest):
+    total = (req.days * 3000) + (req.people * 5000)
+
+    return {
+        "total_estimate": total,
+        "breakdown": {
+            "stay": req.days * 2000,
+            "food": req.days * 800,
+            "local_transport": req.days * 200,
+        },
+        "savings_tips": ["Book flights early", "Use local buses"],
+        "upgrade_options": ["Beach resort upgrade"],
+    }
