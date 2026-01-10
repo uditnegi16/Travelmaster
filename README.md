@@ -1,5 +1,8 @@
 The modified **TravelGuru-v5** architecture integrates the **A2A Protocol** as the communication backbone for a multi-agent system, featuring a **Google ADK Agent** and a **LangGraph Agent**. It also incorporates a dedicated **MLOps** directory to handle model productionization, tracking, and drift detection.
 
+
+
+
 ### 📂 Modified Project Structure: TravelGuru-v5 (A2A & MLOps Edition)
 
 ```text
@@ -323,6 +326,7 @@ uv sync
 > **UV is a high-performance Python package manager that combines dependency resolution, virtual environments, and reproducibility into a single fast tool.**
 
 ---
+---
 ## 📋 UV Commands – macOS Command Guide
 
 | Step  | Command                              | Purpose                      | What It Does Internally                                  | When to Use                     |
@@ -352,6 +356,7 @@ uv sync
 | **7** | `uv pip install -r requirements.txt` | Migrate pip project          | Installs dependencies using uv resolver                  | Legacy projects                 |
 | **8** | `uv sync`                            | Sync environment             | Installs exact versions from `uv.lock`                   | Team / CI usage                 |
 | **9** | `winget uninstall Astral.uv`         | Uninstall UV                 | Removes UV from system                                   | Cleanup (optional)              |
+
 
 ----------------------
 Agile Framework- Jira

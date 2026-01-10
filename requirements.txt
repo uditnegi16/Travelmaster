@@ -22,3 +22,14 @@ uvicorn
 google-genai
 deepagents 
 tavily-python
+uvicorn
+a2a-sdk
+google-adk
+python-dotenv
+nest-asyncio
+click
+google-generativeai
+httpx
+crewai
+langchain-community
+groq
