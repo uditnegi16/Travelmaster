@@ -51,10 +51,10 @@ def main():
     port = int(os.getenv("EXPLORER_PORT", 10002))
 
     try:
-        if not os.getenv("OPENAI_API_KEY") and not os.getenv("GOOGLE_API_KEY"):
+        if not os.getenv("GROQ_API_KEY") and not os.getenv("GOOGLE_API_KEY"):
             # allow starting even without keys if you just want to inspect routes;
             # comment this raise if you prefer to run without keys temporarily.
-            logger.warning("No LLM key found in env (OPENAI_API_KEY or GOOGLE_API_KEY). Server will still start for route inspection.")
+            logger.warning("No LLM key found in env (GROQ_API_KEY or GOOGLE_API_KEY). Server will still start for route inspection.")
             # raise MissingAPIKeyError("Missing LLM API key")
 
         capabilities = AgentCapabilities(streaming=True, pushNotifications=False)
