@@ -1,0 +1,40 @@
+{
+  "entity": "flight",
+  "primary_key": "flight_id",
+  "features": {
+    "origin": {
+      "type": "categorical",
+      "usage": "filter"
+    },
+    "destination": {
+      "type": "categorical",
+      "usage": "filter"
+    },
+    "airline": {
+      "type": "categorical",
+      "usage": "score"
+    },
+    "duration_minutes": {
+      "type": "numeric",
+      "usage": "score"
+    },
+    "price": {
+      "type": "numeric",
+      "usage": "score"
+    },
+    "cabin_class": {
+      "type": "categorical",
+      "usage": "score"
+    }
+  },
+  "ignored_features": [
+    "dep_time",
+    "arr_time",
+    "travel_date"
+  ],
+  "future_features": [
+    "delay_probability",
+    "on_time_score",
+    "baggage_allowance"
+  ]
+}
