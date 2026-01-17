@@ -1,0 +1,23 @@
+entity: cab
+scoring_type: weighted_sum
+
+weights:
+  price: 0.35
+  driver_rating: 0.25
+  distance_km: 0.20
+  vehicle_type: 0.20
+
+normalization:
+  price: inverse_min_max
+  distance_km: inverse_min_max
+  driver_rating: min_max
+
+filters:
+  pickup_location_required: true
+  drop_location_required: true
+  max_price: null
+
+ranking:
+  sort_by: score
+  order: descending
+  top_k: 3

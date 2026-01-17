@@ -1,0 +1,22 @@
+entity: hotel
+scoring_type: weighted_sum
+
+weights:
+  rating: 0.45
+  star_category: 0.25
+  price_per_night: 0.30
+
+normalization:
+  rating: min_max
+  star_category: min_max
+  price_per_night: inverse_min_max
+
+filters:
+  min_rating: 3.5
+  max_price_per_night: null
+  city_required: true
+
+ranking:
+  sort_by: score
+  order: descending
+  top_k: 10

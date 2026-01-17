@@ -1,0 +1,38 @@
+timestamp,error_type,error_msg,traceback,table
+20260115_195123_847,DatabaseError,"Execution failed on sql '
+   SELECT * FROM database_ml.flights WHERE bogus_column = 1
+': column ""bogus_column"" does not exist
+LINE 2:    SELECT * FROM database_ml.flights WHERE bogus_column = 1
+                                                   ^
+","Traceback (most recent call last):
+  File ""c:\Users\uditn\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\io\sql.py"", line 2674, in execute
+    cur.execute(sql, *args)
+psycopg2.errors.UndefinedColumn: column ""bogus_column"" does not exist
+LINE 2:    SELECT * FROM database_ml.flights WHERE bogus_column = 1
+                                                   ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File ""C:\Users\uditn\AppData\Local\Temp\ipykernel_2748\478563012.py"", line 5, in <module>
+    flights_df = read_sql_to_df(""""""
+                 ^^^^^^^^^^^^^^^^^^
+  File ""d:\labmentix\major\TravelGuru\travelguru-v5\backend\app\mlops\utils\db_utils.py"", line 16, in read_sql_to_df
+    df = pd.read_sql_query(query, conn, params=params)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""c:\Users\uditn\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\io\sql.py"", line 526, in read_sql_query
+    return pandas_sql.read_query(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File ""c:\Users\uditn\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\io\sql.py"", line 2738, in read_query
+    cursor = self.execute(sql, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""c:\Users\uditn\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\io\sql.py"", line 2686, in execute
+    raise ex from exc
+pandas.errors.DatabaseError: Execution failed on sql '
+   SELECT * FROM database_ml.flights WHERE bogus_column = 1
+': column ""bogus_column"" does not exist
+LINE 2:    SELECT * FROM database_ml.flights WHERE bogus_column = 1
+                                                   ^
+
+",flights
