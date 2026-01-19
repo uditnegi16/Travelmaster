@@ -381,8 +381,3 @@ Agile Framework- Jira
 | **10. Cleanup** | Team Member | **Sync their local `main` branch** with the new changes. | `git checkout main` $\rightarrow$ `git pull origin main` |
 
 ---------------------------------------------------------------------
-
-uttam's readme test
-
-
-
