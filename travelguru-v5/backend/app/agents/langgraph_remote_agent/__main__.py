@@ -10,7 +10,7 @@ from a2a.server.tasks import InMemoryTaskStore
 from a2a.types import AgentCapabilities, AgentCard, AgentSkill
 from dotenv import load_dotenv
 
-from agent_executor import BookingAgentExecutor
+from app.agents.langgraph_remote_agent.agent_executor import BookingAgentExecutor
 
 load_dotenv()
 

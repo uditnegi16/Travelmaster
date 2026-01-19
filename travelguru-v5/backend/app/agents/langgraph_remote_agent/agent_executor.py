@@ -1,5 +1,3 @@
-# agent_executor.py
-
 import logging
 
 from a2a.server.agent_execution import AgentExecutor, RequestContext
@@ -14,7 +12,7 @@ from a2a.types import (
 )
 from a2a.utils.errors import ServerError
 
-from booking_agent import BookingLogisticsAgent
+from app.agents.langgraph_remote_agent.booking_agent import BookingAgent
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -24,7 +22,7 @@ class BookingAgentExecutor(AgentExecutor):
     """Executes LangGraph-based Booking & Logistics Agent."""
 
     def __init__(self):
-        self.agent = BookingLogisticsAgent()
+        self.agent = BookingAgent()
 
     async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
         if not context.task_id or not context.context_id:
@@ -55,7 +53,7 @@ class BookingAgentExecutor(AgentExecutor):
                     break
 
         except Exception as e:
-            logger.error("Booking Agent error: %s", e)
+            logger.exception("Booking Agent error")
             raise ServerError(error=InternalError()) from e
 
     async def cancel(self, context: RequestContext, event_queue: EventQueue) -> None:

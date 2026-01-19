@@ -10,7 +10,7 @@ from a2a.server.tasks import InMemoryTaskStore
 from a2a.types import AgentCapabilities, AgentCard, AgentSkill
 from dotenv import load_dotenv
 
-from agents.adk_travel_host import create_agent 
+from app.agents.adk_remote_agent.budget_and_experience_optimization_agent import create_agent
 from agent_executor import BudgetAgentExecutor
 from google.adk.artifacts import InMemoryArtifactService
 from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
