@@ -17,14 +17,14 @@ Architecture Layer: Service
 - YES business logic and orchestration
 """
 
-from backend.app.core.amadeus_iata import UnknownCityError, resolve_city_to_iata
-from backend.app.core.logging import get_logger
-from backend.app.shared.schemas import HotelOption
-from backend.app.tools.hotel.adapters.ratings_api import get_hotel_ratings_api
-from backend.app.tools.hotel.adapters.search_api import search_hotels_api
-from backend.app.tools.hotel.normalize import normalize_hotels
-from backend.app.agents.nlp.hotel_intent_extractor import extract_hotel_intent
-from backend.app.agents.postprocessing.hotel_enrichment import enrich_hotels, EnrichmentResult
+from app.core.amadeus_iata import UnknownCityError, resolve_city_to_iata
+from app.core.logging import get_logger
+from app.shared.schemas import HotelOption
+from app.agents.langgraph_agents.tools.hotel.adapters.ratings_api import get_hotel_ratings_api
+from app.agents.langgraph_agents.tools.hotel.adapters.search_api import search_hotels_api
+from app.agents.langgraph_agents.tools.hotel.normalize import normalize_hotels
+from app.agents.nlp.hotel_intent_extractor import extract_hotel_intent
+from app.agents.postprocessing.hotel_enrichment import enrich_hotels, EnrichmentResult
 
 logger = get_logger(__name__)
 
@@ -488,7 +488,7 @@ def search_hotels_enriched(
                 hotels = hotels[:limit]
             
             # Create minimal enrichment result
-            from backend.app.agents.postprocessing.hotel_enrichment import EnrichedHotel
+            from app.agents.postprocessing.hotel_enrichment import EnrichedHotel
             enriched_hotels = [
                 EnrichedHotel(
                     hotel=h,

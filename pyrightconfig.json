@@ -1,0 +1,11 @@
+{
+  "include": [
+    "tests",
+    "travelguru-v5/backend/app"
+  ],
+  "extraPaths": [
+    "travelguru-v5/backend"
+  ],
+  "pythonVersion": "3.12",
+  "typeCheckingMode": "basic"
+}

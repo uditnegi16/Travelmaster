@@ -7,8 +7,8 @@ from collections import defaultdict, Counter
 from datetime import datetime
 from typing import Any
 
-from backend.app.core.logging import get_logger
-from backend.app.shared.schemas import WeatherSummary
+from app.core.logging import get_logger
+from app.shared.schemas import WeatherSummary
 
 logger = get_logger(__name__)
 

@@ -20,8 +20,8 @@ Architecture Layer: Normalizer
 
 from typing import Any
 
-from backend.app.core.logging import get_logger
-from backend.app.shared.schemas import HotelOption
+from app.core.logging import get_logger
+from app.shared.schemas import HotelOption
 
 logger = get_logger(__name__)
 

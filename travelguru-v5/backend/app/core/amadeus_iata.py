@@ -33,8 +33,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from backend.app.core.amadeus_client import call_amadeus, get_amadeus_client
-from backend.app.core.logging import get_logger
+from app.core.amadeus_client import call_amadeus, get_amadeus_client
+from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 

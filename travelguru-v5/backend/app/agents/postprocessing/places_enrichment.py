@@ -25,8 +25,8 @@ import logging
 from pydantic import BaseModel, Field
 from openai import OpenAI
 
-from backend.app.shared.schemas import PlaceOption
-from backend.app.shared.constants import (
+from app.shared.schemas import PlaceOption
+from app.shared.constants import (
     INSIGHT_TYPE_ADVANTAGE,
     INSIGHT_TYPE_CONSIDERATION,
     INSIGHT_TYPE_TIP,
@@ -230,7 +230,7 @@ class PlacesIntelligenceEngine:
         # Auto-initialize OpenAI client from config if not provided
         if openai_client is None and use_knowledge_system:
             try:
-                from backend.app.agents.place_knowledge.client_factory import get_openai_client
+                from app.agents.place_knowledge.client_factory import get_openai_client
                 self.openai_client = get_openai_client()
             except Exception as e:
                 self.logger.error(f"Failed to auto-initialize OpenAI client: {e}")
@@ -437,7 +437,7 @@ class PlacesIntelligenceEngine:
         # Use knowledge-enhanced contextual info if enabled
         if self.use_knowledge_system and self.openai_client:
             try:
-                from backend.app.agents.place_knowledge.integration import (
+                from app.agents.place_knowledge.integration import (
                     create_knowledge_enhanced_contextual_info
                 )
                 contextual = create_knowledge_enhanced_contextual_info(

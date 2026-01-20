@@ -9,7 +9,7 @@ This package provides intelligent place knowledge generation using:
 4. Intelligent caching for performance and cost efficiency
 
 Quick Start:
-    >>> from backend.app.agents.place_knowledge import get_place_knowledge
+    >>> from app.agents.place_knowledge import get_place_knowledge
     >>> 
     >>> # No client needed - auto-initializes from config
     >>> knowledge = get_place_knowledge(

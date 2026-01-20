@@ -8,12 +8,12 @@ in the future. The interface is designed to be swappable.
 
 from typing import Any, Callable
 
-from backend.app.core.logging import get_logger
-from backend.app.tools.flight.service import search_flights
-from backend.app.tools.hotel.service import search_hotels
-from backend.app.tools.places.service import search_places
-from backend.app.tools.weather.service import get_weather_forecast
-from backend.app.tools.budget.service import compute_budget
+from app.core.logging import get_logger
+from app.agents.langgraph_agents.tools.flight.service import search_flights
+from app.agents.langgraph_agents.tools.hotel.service import search_hotels
+from app.agents.langgraph_agents.tools.places.service import search_places
+from app.agents.langgraph_agents.tools.weather.service import get_weather_forecast
+from app.agents.langgraph_agents.tools.budget.service import compute_budget
 
 logger = get_logger(__name__)
 

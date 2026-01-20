@@ -10,10 +10,10 @@ from pathlib import Path
 sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, errors='replace')
 
 # Add project root to path
-project_root = Path(__file__).resolve().parents[2]
+project_root = Path(__file__).resolve().parents[1] / "travelguru-v5" / "backend"
 sys.path.insert(0, str(project_root))
 
-from backend.app.agents.langgraph_agents.travel_planner_graph import TravelPlannerOrchestrator
+from app.agents.langgraph_agents.travel_planner_graph import TravelPlannerOrchestrator
 
 
 def test_composer_comprehensive_output():

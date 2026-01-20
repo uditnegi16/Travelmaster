@@ -7,7 +7,7 @@ import asyncio
 import logging
 from typing import Any, Dict
 
-from backend.app.mcp_server.server import mcp
+from app.mcp_server.server import mcp
 
 logger = logging.getLogger(__name__)
 

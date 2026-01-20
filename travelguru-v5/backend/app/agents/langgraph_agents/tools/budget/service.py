@@ -3,14 +3,14 @@
 import logging
 from typing import Optional
 
-from backend.app.core.config import DEFAULT_CURRENCY
-from backend.app.shared.schemas import (
+from app.core.config import DEFAULT_CURRENCY
+from app.shared.schemas import (
     FlightOption,
     HotelOption,
     PlaceOption,
     BudgetSummary
 )
-from backend.app.agents.postprocessing.budget_enrichment import enrich_budget
+from app.agents.postprocessing.budget_enrichment import enrich_budget
 from .helpers import (
     compute_flights_cost,
     compute_hotel_cost,

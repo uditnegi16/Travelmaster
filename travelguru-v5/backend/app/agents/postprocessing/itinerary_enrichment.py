@@ -29,7 +29,7 @@ import statistics
 
 from pydantic import BaseModel, Field
 
-from backend.app.shared.schemas import (
+from app.shared.schemas import (
     FlightOption,
     HotelOption,
     PlaceOption,
@@ -1516,7 +1516,7 @@ def convert_to_trip_plan(enriched_itinerary: EnrichedItinerary,
     notes = "\n".join(notes_parts)
     
     # Convert weather summaries to WeatherInfo (simplified)
-    from backend.app.shared.schemas import WeatherInfo
+    from app.shared.schemas import WeatherInfo
     weather_info = [
         WeatherInfo(
             city=w.city,

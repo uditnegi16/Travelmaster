@@ -11,8 +11,8 @@ from pathlib import Path
 
 from openai import OpenAI
 
-from backend.app.shared.schemas import PlannerOutput, ToolCallPlan
-from backend.app.core.config import PLANNER_MODEL, OPENAI_API_KEY
+from app.shared.schemas import PlannerOutput, ToolCallPlan
+from app.core.config import PLANNER_MODEL, OPENAI_API_KEY
 
 logger = logging.getLogger(__name__)
 

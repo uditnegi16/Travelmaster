@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, Optional, List
 from pydantic import BaseModel, Field
 
-from backend.app.shared.constants import (
+from app.shared.constants import (
     PREF_BUDGET_PREFERENCE,
     PREF_TIMING_PREFERENCE,
     PREF_AVOID_LAYOVERS,

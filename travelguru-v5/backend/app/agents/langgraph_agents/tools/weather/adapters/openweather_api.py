@@ -8,9 +8,9 @@ Returns raw JSON response without normalization.
 import requests
 from typing import Any
 
-from backend.app.core.amadeus_client import call_amadeus
-from backend.app.core.config import OPENWEATHER_API_KEY, OPENWEATHER_TIMEOUT
-from backend.app.core.logging import get_logger
+from app.core.amadeus_client import call_amadeus
+from app.core.config import OPENWEATHER_API_KEY, OPENWEATHER_TIMEOUT
+from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 

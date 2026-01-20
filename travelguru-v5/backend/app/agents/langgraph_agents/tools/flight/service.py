@@ -3,13 +3,13 @@ Flight search service.
 Business orchestrator for flight search operations.
 """
 
-from backend.app.core.config import DEFAULT_CURRENCY
-from backend.app.core.logging import get_logger
-from backend.app.shared.schemas import FlightOption
-from backend.app.tools.flight.adapters.api import search_flights_api
-from backend.app.tools.flight.normalize import normalize_flight_offers
-from backend.app.core.amadeus_iata import resolve_city_to_iata, UnknownCityError
-from backend.app.agents.postprocessing.flight_enrichment import FlightIntelligenceEngine
+from app.core.config import DEFAULT_CURRENCY
+from app.core.logging import get_logger
+from app.shared.schemas import FlightOption
+from app.agents.langgraph_agents.tools.flight.adapters.api import search_flights_api
+from app.agents.langgraph_agents.tools.flight.normalize import normalize_flight_offers
+from app.core.amadeus_iata import resolve_city_to_iata, UnknownCityError
+from app.agents.postprocessing.flight_enrichment import FlightIntelligenceEngine
 
 
 logger = get_logger(__name__)

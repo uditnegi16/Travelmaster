@@ -12,7 +12,7 @@ import time
 from typing import Any, Dict, List, Optional
 from datetime import datetime, timedelta
 
-from backend.app.shared.schemas import (
+from app.shared.schemas import (
     TripRequest,
     TripResponse,
     FlightOption,
@@ -24,19 +24,19 @@ from backend.app.shared.schemas import (
     TripPlan,
     DayPlan
 )
-from backend.app.agents.langgraph_agents.planner_agent import plan_trip as planner_plan_trip
-from backend.app.agents.langgraph_agents.composer_agent import ComposerAgent
+from app.agents.langgraph_agents.planner_agent import plan_trip as planner_plan_trip
+from app.agents.langgraph_agents.composer_agent import ComposerAgent
 
 # Services (domain logic)
-from backend.app.agents.langgraph_agents.local_tool_router import call_local_tool
+from app.agents.langgraph_agents.local_tool_router import call_local_tool
 
 # Enrichers (postprocessing)
-from backend.app.agents.postprocessing.flight_enrichment import enrich_flights
-from backend.app.agents.postprocessing.hotel_enrichment import enrich_hotels
-from backend.app.agents.postprocessing.places_enrichment import enrich_places
-from backend.app.agents.postprocessing.weather_enrichment import enrich_weather_forecast
-from backend.app.agents.postprocessing.budget_enrichment import enrich_budget
-from backend.app.agents.postprocessing.itinerary_enrichment import enrich_itinerary
+from app.agents.postprocessing.flight_enrichment import enrich_flights
+from app.agents.postprocessing.hotel_enrichment import enrich_hotels
+from app.agents.postprocessing.places_enrichment import enrich_places
+from app.agents.postprocessing.weather_enrichment import enrich_weather_forecast
+from app.agents.postprocessing.budget_enrichment import enrich_budget
+from app.agents.postprocessing.itinerary_enrichment import enrich_itinerary
 
 logger = logging.getLogger(__name__)
 
@@ -979,7 +979,7 @@ def generate_trip_plan(user_query: str = None, trip_request: TripRequest = None)
         >>> result = generate_trip_plan("Plan a 3-day trip to Paris from London")
         >>> 
         >>> # Using structured request (RECOMMENDED for better accuracy)
-        >>> from backend.app.shared.schemas import TripRequest
+        >>> from app.shared.schemas import TripRequest
         >>> req = TripRequest(
         ...     from_city="Delhi",
         ...     to_city="Goa",

@@ -9,11 +9,11 @@ from pathlib import Path
 
 # Add project root to Python path
 # File is at: travelguru-v5/backend/app/mcp/server.py
-# We need: travelguru-v5/ to be in path for "from backend.app..." imports
+# We need: travelguru-v5/ to be in path for "from app..." imports
 project_root = Path(__file__).resolve().parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from backend.app.core.logging import setup_logging
+from app.core.logging import setup_logging
 setup_logging(level="INFO")
 
 import logging
@@ -21,12 +21,12 @@ from typing import List, Optional
 
 from mcp.server.fastmcp import FastMCP
 
-from backend.app.tools.flight.service import search_flights as search_flights_service
-from backend.app.tools.hotel.service import search_hotels as search_hotels_service
-from backend.app.tools.places.service import search_places as search_places_service
-from backend.app.tools.weather.service import get_weather as get_weather_service
-from backend.app.tools.budget.service import compute_budget as compute_budget_service
-from backend.app.shared.schemas import FlightOption, HotelOption, PlaceOption, WeatherInfo, BudgetSummary
+from app.tools.flight.service import search_flights as search_flights_service
+from app.tools.hotel.service import search_hotels as search_hotels_service
+from app.tools.places.service import search_places as search_places_service
+from app.tools.weather.service import get_weather as get_weather_service
+from app.tools.budget.service import compute_budget as compute_budget_service
+from app.shared.schemas import FlightOption, HotelOption, PlaceOption, WeatherInfo, BudgetSummary
 
 # Configure logging
 logger = logging.getLogger(__name__)
