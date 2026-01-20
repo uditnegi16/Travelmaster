@@ -29,6 +29,8 @@ logger = get_logger(__name__)
 def normalize_hotels(
     raw_hotels: list[dict],
     ratings_map: dict[str, dict],
+    check_in: str | None = None,
+    check_out: str | None = None,
 ) -> list[HotelOption]:
     """
     Normalize raw Amadeus hotel data into HotelOption schema objects.
@@ -42,6 +44,8 @@ def normalize_hotels(
                    Expected structure: [{"hotel": {...}, "offers": [...]}, ...]
         ratings_map: Dictionary mapping hotel IDs to raw rating objects.
                     Expected structure: {hotel_id: {"overallRating": "85", ...}, ...}
+        check_in: Check-in date in YYYY-MM-DD format (optional)
+        check_out: Check-out date in YYYY-MM-DD format (optional)
     
     Returns:
         List of validated HotelOption objects.
@@ -122,6 +126,8 @@ def normalize_hotels(
                 stars=stars,
                 price_per_night=price_per_night,
                 amenities=amenities,
+                check_in=check_in,
+                check_out=check_out,
             )
             
             normalized_hotels.append(hotel_option)

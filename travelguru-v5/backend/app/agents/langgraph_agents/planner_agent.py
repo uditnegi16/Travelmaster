@@ -1,12 +1,13 @@
 """
 Planner Agent for TravelGuru v5.
-This is the reasoning brain (LLM #1) that analyzes user intent and produces
-a structured execution plan. It does NOT call tools directly.
+Converts user natural language queries into strict, structured execution plans.
+This is a pure planning compiler - no enrichment, no business logic, no tool calls.
 """
 
 import json
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, List
+from pathlib import Path
 
 from openai import OpenAI
 
@@ -18,195 +19,338 @@ logger = logging.getLogger(__name__)
 # Initialize OpenAI client
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-# System prompt for the planner
-SYSTEM_PROMPT = """You are an intelligent travel planning engine for TravelGuru.
-Your task is to analyze user travel requests and output a structured execution plan as JSON.
+# Allowed tools in strict order
+ALLOWED_TOOLS = [
+    "search_flights",
+    "search_hotels",
+    "search_places",
+    "get_weather_forecast",
+    "compute_budget"
+]
 
-Available tools:
-1. search_flights - Search for flights between cities
-   Arguments: from_city (str), to_city (str), date (str, optional), max_price (int, optional), limit (int, default 5), sort_by_price (bool, default true)
-
-2. search_hotels - Search for hotels in a city
-   Arguments: city (str), min_stars (int, optional), max_price (int, optional), amenities (list[str], optional), limit (int, default 5), sort_by_price (bool, default true)
-
-3. search_places - Search for places/attractions in a city
-   Arguments: city (str), category (str, optional), max_entry_fee (int, optional), limit (int, default 5), sort_by_fee (bool, default true)
-
-4. get_weather - Get weather information for a city and month
-   Arguments: city (str), month (int, 1-12)
-
-5. compute_budget - Compute total budget for a trip
-   Arguments: flight (dict or null), hotel (dict or null), nights (int), places (list[dict] or null)
-
-Your output MUST be valid JSON matching this exact schema:
-{
-  "tool_calls": [
-    {
-      "tool_name": "search_flights",
-      "arguments": {"from_city": "Delhi", "to_city": "Mumbai", "date": "2026-02-15"}
-    }
-  ],
-  "reasoning": "Brief explanation of the plan"
-}
-
-Rules:
-- Output MUST be valid JSON only (no markdown, no code blocks, no explanations outside JSON)
-- tool_name MUST be one of: search_flights, search_hotels, search_places, get_weather, compute_budget
-- arguments MUST be a valid object with appropriate fields for that tool
-- Typical order: search_flights → search_hotels → get_weather → search_places → compute_budget
-- Extract source city, destination city, dates, budget, and interests from user query
-- reasoning should explain why you chose these tools and in this order
-
-Analyze the user's request and determine which tools are needed."""
+# Tool order must be exactly this
+EXPECTED_TOOL_ORDER = ALLOWED_TOOLS
 
 
-RETRY_PROMPT = """Your previous output was not valid JSON.
-
-You MUST output ONLY valid JSON matching this exact schema:
-{
-  "tool_calls": [
-    {
-      "tool_name": "tool_name_here",
-      "arguments": {"arg1": "value1"}
-    }
-  ],
-  "reasoning": "explanation here"
-}
-
-Do NOT include markdown code blocks.
-Do NOT include any text before or after the JSON.
-Output ONLY the raw JSON object."""
-
-
-def _build_user_prompt(user_query: str) -> str:
-    """Build the user prompt with the query."""
-    return f"""User request: {user_query}
-
-Analyze this request and output the execution plan as JSON."""
-
-
-def _call_llm(messages: list[Dict[str, str]]) -> str:
+def _load_system_prompt() -> str:
     """
-    Call the LLM with the given messages.
+    Load the planner system prompt from prompts/planner.txt.
     
-    Args:
-        messages: List of message dicts with 'role' and 'content'
-        
     Returns:
-        Raw LLM output string
+        System prompt content
         
     Raises:
-        RuntimeError: If LLM call fails
+        RuntimeError: If prompt file not found
     """
-    try:
-        response = client.chat.completions.create(
-            model=PLANNER_MODEL,
-            messages=messages,
-            response_format={"type": "json_object"},
-            temperature=0.0
-        )
-        
-        raw_output = response.choices[0].message.content
-        logger.debug(f"Raw LLM output: {raw_output}")
-        return raw_output
-    except Exception as e:
-        logger.error(f"LLM call failed: {e}", exc_info=True)
-        raise RuntimeError(f"LLM call failed: {e}") from e
+    prompt_path = Path(__file__).parent / "prompts" / "planner.txt"
+    if not prompt_path.exists():
+        raise RuntimeError(f"Planner prompt file not found: {prompt_path}")
+    return prompt_path.read_text(encoding="utf-8")
 
 
-def _parse_output(raw_output: str) -> PlannerOutput:
+def _call_llm(user_query: str, system_prompt: str) -> str:
     """
-    Parse and validate LLM output into PlannerOutput.
+    Call OpenAI LLM to generate execution plan.
+    Retries once on failure with exponential backoff.
     
     Args:
-        raw_output: Raw JSON string from LLM
+        user_query: User's natural language travel request
+        system_prompt: System prompt from planner.txt
         
     Returns:
-        Validated PlannerOutput instance
+        Raw LLM response string
         
     Raises:
-        ValueError: If output is invalid JSON or doesn't match schema
+        RuntimeError: If LLM call fails after retries
     """
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_query}
+    ]
+    
+    max_retries = 2
+    last_error = None
+    
+    for attempt in range(max_retries):
+        try:
+            response = client.chat.completions.create(
+                model=PLANNER_MODEL,
+                messages=messages,
+                temperature=0,
+                stream=False
+            )
+            
+            raw_output = response.choices[0].message.content
+            if not raw_output:
+                raise RuntimeError("LLM returned empty response")
+            
+            logger.debug(f"Raw LLM output: {raw_output[:200]}...")
+            return raw_output
+        
+        except Exception as e:
+            last_error = e
+            if attempt < max_retries - 1:
+                logger.warning(f"LLM call attempt {attempt + 1} failed: {e}. Retrying...")
+                import time
+                time.sleep(2 ** attempt)  # Exponential backoff: 1s, 2s
+            else:
+                logger.error(f"LLM call failed after {max_retries} attempts: {e}", exc_info=True)
+    
+    raise RuntimeError(f"LLM call failed after {max_retries} attempts: {last_error}") from last_error
+
+
+def _strip_markdown_fences(text: str) -> str:
+    """
+    Strip markdown code fences if present.
+    
+    Args:
+        text: Raw text that may contain ```json ... ```
+        
+    Returns:
+        Text with fences removed
+    """
+    text = text.strip()
+    
+    # Remove ```json ... ``` or ``` ... ```
+    if text.startswith("```"):
+        lines = text.split("\n")
+        # Remove first line (```json or ```)
+        lines = lines[1:]
+        # Remove last line if it's ```
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        text = "\n".join(lines)
+    
+    return text.strip()
+
+
+def _parse_json(raw_output: str) -> Dict[str, Any]:
+    """
+    Parse raw LLM output as JSON.
+    
+    Args:
+        raw_output: Raw LLM response
+        
+    Returns:
+        Parsed JSON as dict
+        
+    Raises:
+        RuntimeError: If JSON parsing fails
+    """
+    # Strip markdown fences if present
+    cleaned = _strip_markdown_fences(raw_output)
+    
     try:
-        data = json.loads(raw_output)
+        data = json.loads(cleaned)
+        return data
     except json.JSONDecodeError as e:
-        logger.error(f"Failed to parse JSON: {e}")
-        raise ValueError(f"Invalid JSON output: {e}") from e
+        logger.error(f"JSON parsing failed: {e}")
+        logger.error(f"Raw output: {raw_output}")
+        raise RuntimeError(f"Failed to parse JSON: {e}. Raw output: {raw_output}") from e
+
+
+def _validate_structure(data: Dict[str, Any]) -> None:
+    """
+    Validate that parsed JSON has required structure.
     
-    try:
-        planner_output = PlannerOutput(**data)
-        logger.debug(f"Parsed PlannerOutput: {planner_output.model_dump()}")
-        return planner_output
-    except Exception as e:
-        logger.error(f"Failed to validate PlannerOutput schema: {e}")
-        raise ValueError(f"Output doesn't match PlannerOutput schema: {e}") from e
+    Args:
+        data: Parsed JSON dict
+        
+    Raises:
+        RuntimeError: If structure is invalid
+    """
+    if not isinstance(data, dict):
+        raise RuntimeError(f"Expected dict, got {type(data).__name__}")
+    
+    if "tool_calls" not in data:
+        raise RuntimeError("Missing 'tool_calls' key in response")
+    
+    if "reasoning" not in data:
+        raise RuntimeError("Missing 'reasoning' key in response")
+    
+    if not isinstance(data["tool_calls"], list):
+        raise RuntimeError(f"'tool_calls' must be list, got {type(data['tool_calls']).__name__}")
+    
+    if not isinstance(data["reasoning"], str):
+        raise RuntimeError(f"'reasoning' must be string, got {type(data['reasoning']).__name__}")
+    
+    # Optional: Check for schema_version (future-proofing)
+    if "schema_version" in data:
+        if data["schema_version"] != "planner_v1":
+            logger.warning(f"Unexpected schema_version: {data['schema_version']}. Expected: planner_v1")
+    
+    # Guard against extra keys
+    expected_keys = {"tool_calls", "reasoning", "schema_version"}
+    extra_keys = set(data.keys()) - expected_keys
+    if extra_keys:
+        logger.warning(f"Response contains unexpected extra keys: {extra_keys}")
+
+
+def _validate_tool_call(tool_call: Dict[str, Any], index: int) -> None:
+    """
+    Validate a single tool call.
+    
+    Args:
+        tool_call: Tool call dict
+        index: Index in tool_calls array (for error messages)
+        
+    Raises:
+        RuntimeError: If tool call is invalid
+    """
+    if not isinstance(tool_call, dict):
+        raise RuntimeError(f"Tool call {index} must be dict, got {type(tool_call).__name__}")
+    
+    if "tool_name" not in tool_call:
+        raise RuntimeError(f"Tool call {index} missing 'tool_name' key")
+    
+    if "arguments" not in tool_call:
+        raise RuntimeError(f"Tool call {index} missing 'arguments' key")
+    
+    tool_name = tool_call["tool_name"]
+    arguments = tool_call["arguments"]
+    
+    if not isinstance(tool_name, str):
+        raise RuntimeError(f"Tool call {index} 'tool_name' must be string")
+    
+    if not isinstance(arguments, dict):
+        raise RuntimeError(f"Tool call {index} 'arguments' must be dict")
+    
+    # Validate tool name is allowed
+    if tool_name not in ALLOWED_TOOLS:
+        raise RuntimeError(
+            f"Tool call {index} has invalid tool name '{tool_name}'. "
+            f"Allowed: {ALLOWED_TOOLS}"
+        )
+    
+    # Validate no None values in arguments
+    for key, value in arguments.items():
+        if value is None:
+            raise RuntimeError(
+                f"Tool call {index} ({tool_name}) has None value for argument '{key}'"
+            )
+
+
+def _validate_tool_order(tool_calls: List[Dict[str, Any]]) -> None:
+    """
+    Validate that tools are in the expected strict order.
+    
+    Args:
+        tool_calls: List of tool call dicts
+        
+    Raises:
+        RuntimeError: If order is incorrect
+    """
+    if len(tool_calls) != len(EXPECTED_TOOL_ORDER):
+        raise RuntimeError(
+            f"Expected {len(EXPECTED_TOOL_ORDER)} tool calls, got {len(tool_calls)}. "
+            f"Must call all tools: {EXPECTED_TOOL_ORDER}"
+        )
+    
+    for i, (tool_call, expected_tool) in enumerate(zip(tool_calls, EXPECTED_TOOL_ORDER)):
+        actual_tool = tool_call["tool_name"]
+        if actual_tool != expected_tool:
+            raise RuntimeError(
+                f"Tool at position {i} should be '{expected_tool}', got '{actual_tool}'. "
+                f"Expected order: {EXPECTED_TOOL_ORDER}"
+            )
+
+
+def _validate_plan(data: Dict[str, Any]) -> None:
+    """
+    Validate complete plan structure and content.
+    
+    Args:
+        data: Parsed JSON plan
+        
+    Raises:
+        RuntimeError: If validation fails
+    """
+    # Validate structure
+    _validate_structure(data)
+    
+    tool_calls = data["tool_calls"]
+    
+    # Validate each tool call
+    for i, tool_call in enumerate(tool_calls):
+        _validate_tool_call(tool_call, i)
+    
+    # Validate tool order
+    _validate_tool_order(tool_calls)
+    
+    logger.info(f"Plan validation passed: {len(tool_calls)} tools in correct order")
 
 
 def plan_trip(user_query: str) -> PlannerOutput:
     """
-    Generate a structured travel execution plan from user query.
+    Generate structured execution plan from user's natural language query.
     
-    This is the main entry point for the Planner Agent. It analyzes the user's
-    travel request and produces a structured plan specifying which tools to call,
-    in what order, and with what arguments.
+    This is a pure planning compiler that:
+    1. Loads planner.txt as system prompt
+    2. Calls LLM with temperature=0
+    3. Parses and validates JSON output
+    4. Returns structured PlannerOutput
     
     Args:
-        user_query: The user's travel request in natural language
+        user_query: User's natural language travel request
         
     Returns:
-        PlannerOutput containing tool calls and reasoning
+        PlannerOutput with validated tool calls and reasoning
         
     Raises:
         ValueError: If user_query is empty
-        RuntimeError: If planner fails to produce valid output after retry
+        RuntimeError: If planning fails (LLM error, invalid JSON, validation failure)
     """
     # Validate input
     if not user_query or not user_query.strip():
-        logger.error("Empty user query provided")
         raise ValueError("user_query cannot be empty")
     
     logger.info(f"Planning trip for query: {user_query}")
     
-    # Build messages for first attempt
-    messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": _build_user_prompt(user_query)}
-    ]
+    # Load system prompt
+    system_prompt = _load_system_prompt()
     
-    # First attempt
+    # Call LLM
+    raw_output = _call_llm(user_query.strip(), system_prompt)
+    
+    # Parse JSON
+    data = _parse_json(raw_output)
+    
+    # Validate plan
+    _validate_plan(data)
+    
+    # Clean protocol metadata before domain validation
+    cleaned_data = _clean_planner_payload(data)
+    
+    # Convert to PlannerOutput
     try:
-        raw_output = _call_llm(messages)
-        planner_output = _parse_output(raw_output)
-        
+        planner_output = PlannerOutput(**cleaned_data)
         logger.info(f"Successfully generated plan with {len(planner_output.tool_calls)} tool calls")
         logger.info(f"Reasoning: {planner_output.reasoning}")
-        
         return planner_output
     
-    except ValueError as e:
-        # Parsing/validation failed, retry with stricter prompt
-        logger.warning(f"First attempt failed: {e}. Retrying with stricter prompt.")
-        
-        # Add the failed output and retry instruction
-        messages.append({"role": "assistant", "content": raw_output})
-        messages.append({"role": "user", "content": RETRY_PROMPT})
-        
-        try:
-            raw_output_retry = _call_llm(messages)
-            planner_output = _parse_output(raw_output_retry)
-            
-            logger.info(f"Retry successful: generated plan with {len(planner_output.tool_calls)} tool calls")
-            logger.info(f"Reasoning: {planner_output.reasoning}")
-            
-            return planner_output
-        
-        except ValueError as e2:
-            logger.error(f"Retry also failed: {e2}")
-            raise RuntimeError(f"Planner failed to produce valid output after retry: {e2}") from e2
-        except RuntimeError:
-            # Re-raise LLM call errors
-            raise
+    except Exception as e:
+        logger.error(f"Failed to create PlannerOutput from validated data: {e}")
+        raise RuntimeError(f"Failed to create PlannerOutput: {e}") from e
+
+
+def _clean_planner_payload(data: dict) -> dict:
+    """
+    Remove protocol metadata fields before domain model validation.
     
-    except RuntimeError:
-        # Re-raise LLM call errors from first attempt
-        raise
+    The LLM may return fields like schema_version, version, _meta, etc.
+    These are protocol-level fields and should not leak into domain models.
+    
+    Args:
+        data: Raw planner payload from LLM
+        
+    Returns:
+        Cleaned payload with only domain fields
+    """
+    cleaned = data.copy()
+    
+    # Remove protocol metadata fields
+    protocol_fields = ['schema_version', 'version', '_meta', 'metadata']
+    for field in protocol_fields:
+        cleaned.pop(field, None)
+    
+    return cleaned
