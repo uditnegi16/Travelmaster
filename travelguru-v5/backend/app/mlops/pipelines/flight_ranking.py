@@ -36,35 +36,22 @@ def apply_filters(df, filters, user_pref):
     return df
 
 
-def rank_flights(flights_df, user_pref, artifact_dir):
-    scoring_path = os.path.join(
-        artifact_dir, "flight_scoring.yaml"
+def rank_flights(df, user_pref, top_k=10):
+
+    df = df[df["origin"] == user_pref.origin]
+    df = df[df["destination"] == user_pref.destination]
+
+    # Normalize
+    df["price_norm"] = (df["price"] - df["price"].min()) / (df["price"].max() - df["price"].min())
+    df["duration_norm"] = (df["duration_minutes"] - df["duration_minutes"].min()) / (
+        df["duration_minutes"].max() - df["duration_minutes"].min()
     )
 
-    scoring = load_scoring_config(scoring_path)
+    # Score
+    df["score"] = 0.6 * (1 - df["price_norm"]) + 0.4 * (1 - df["duration_norm"])
 
-    df = flights_df.copy()
+    df = df.sort_values(by="score", ascending=False)
 
-    # 1️⃣ Filters
-    df = apply_filters(
-        df, scoring["filters"], user_pref
-    )
+    return df.head(top_k).to_dict(orient="records")
 
-    # 2️⃣ Normalize numeric features
-    for feature, method in scoring["normalization"].items():
-        df[feature] = normalize(df[feature], method)
 
-    # 3️⃣ Score
-    df["score"] = 0.0
-    for feature, weight in scoring["weights"].items():
-        if feature in df.columns:
-            df["score"] += weight * df[feature]
-
-    # 4️⃣ Rank
-    ranking = scoring["ranking"]
-    df = df.sort_values(
-        ranking["sort_by"],
-        ascending=(ranking["order"] == "ascending"),
-    )
-
-    return df.head(ranking["top_k"])

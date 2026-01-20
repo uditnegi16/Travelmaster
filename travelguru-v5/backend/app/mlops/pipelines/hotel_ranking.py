@@ -36,35 +36,54 @@ def apply_filters(df, filters, user_pref):
     return df
 
 
-def rank_hotels(hotels_df, user_pref, artifact_dir):
-    scoring_path = os.path.join(
-        artifact_dir, "hotel_scoring.yaml"
+def rank_hotels(df, user_pref, top_k=10):
+    """
+    Rank hotels based on scoring config and user preferences
+    """
+
+    import yaml
+    import json
+    import os
+
+    base_path = os.path.dirname(__file__)
+    artifact_path = os.path.join(base_path, "..", "components", "training", "artifacts")
+
+    # ---------- Load configs ----------
+    with open(os.path.join(artifact_path, "hotel_scoring.yaml"), "r") as f:
+        scoring_cfg = yaml.safe_load(f)
+
+    with open(os.path.join(artifact_path, "hotel_features.json"), "r") as f:
+        feature_cfg = json.load(f)
+
+    # ---------- Filtering ----------
+    if scoring_cfg["filters"]["city_required"]:
+        df = df[df["city"] == user_pref["city"]]
+
+    if scoring_cfg["filters"]["min_rating"]:
+        df = df[df["rating"] >= scoring_cfg["filters"]["min_rating"]]
+
+    # ---------- Normalization ----------
+    def min_max(series):
+        return (series - series.min()) / (series.max() - series.min())
+
+    def inverse_min_max(series):
+        return 1 - min_max(series)
+
+    df["rating_norm"] = min_max(df["rating"])
+    df["star_norm"] = min_max(df["star_category"])
+    df["price_norm"] = inverse_min_max(df["price_per_night"])
+
+    # ---------- Scoring ----------
+    w = scoring_cfg["weights"]
+
+    df["score"] = (
+        w["rating"] * df["rating_norm"] +
+        w["star_category"] * df["star_norm"] +
+        w["price_per_night"] * df["price_norm"]
     )
 
-    scoring = load_scoring_config(scoring_path)
+    # ---------- Ranking ----------
+    df = df.sort_values(by="score", ascending=False)
 
-    df = hotels_df.copy()
+    return df.head(top_k).to_dict(orient="records")
 
-    # 1️⃣ Apply filters
-    df = apply_filters(
-        df, scoring["filters"], user_pref
-    )
-
-    # 2️⃣ Normalize features
-    for feature, method in scoring["normalization"].items():
-        df[feature] = normalize(df[feature], method)
-
-    # 3️⃣ Compute weighted score
-    df["score"] = 0.0
-    for feature, weight in scoring["weights"].items():
-        df["score"] += weight * df[feature]
-
-    # 4️⃣ Rank
-    ranking = scoring["ranking"]
-
-    df = df.sort_values(
-        ranking["sort_by"],
-        ascending=(ranking["order"] == "ascending"),
-    )
-
-    return df.head(ranking["top_k"])

@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/0/7136438b66f5463cb956630f5c52daed/artifacts
+end_time: 1768909793773
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 7136438b66f5463cb956630f5c52daed
+run_name: online_plan_trip
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1768909791585
+status: 4
+tags: []
+user_id: uditn
