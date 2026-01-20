@@ -1,62 +1,115 @@
-"""Weather information service."""
+"""
+Weather information service.
+Orchestrates weather forecast retrieval using OpenWeather API.
+"""
 
-import logging
+from backend.app.core.logging import get_logger
+from backend.app.shared.schemas import WeatherSummary
+from backend.app.tools.weather.adapters.openweather_api import (
+    fetch_weather_forecast_api,
+    WeatherAPIError,
+)
+from backend.app.tools.weather.normalize import normalize_weather_forecast
+from backend.app.agents.postprocessing.weather_enrichment import enrich_weather_forecast
 
-from backend.app.core.config import DATA_SOURCE
-from backend.app.shared.schemas import WeatherInfo
-from .normalize import raw_to_weatherinfo
-
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
-def get_weather(city: str, month: int) -> WeatherInfo | None:
+class WeatherServiceError(Exception):
+    """Raised when weather service operations fail."""
+    pass
+
+
+def get_weather_forecast(
+    *,
+    city: str,
+    days: int = 5,
+) -> list[WeatherSummary]:
     """
-    Get weather information for a specific city and month.
+    High-level weather forecast API used by the TravelGuru brain.
+    
+    Retrieves multi-day weather forecast for a specified city.
+    Orchestrates adapter call (OpenWeather API) and normalization
+    into WeatherSummary schema objects.
     
     Args:
-        city: City name (required)
-        month: Month number 1-12 (required)
-    
+        city: City name (required, non-empty string)
+        days: Number of forecast days to return (default: 5, max: 16)
+        
     Returns:
-        WeatherInfo instance if found, None otherwise
+        List of WeatherSummary objects, one per day, up to `days` limit.
+        Returns empty list if no data available.
+        
+    Raises:
+        WeatherServiceError: If validation fails, API call fails, or normalization fails
+        
+    Example:
+        >>> forecast = get_weather_forecast(city="London", days=5)
+        >>> len(forecast)
+        5
     """
+    logger.info(f"Starting weather forecast service for city='{city}', days={days}")
+    
     # Validate inputs
-    if not city or not city.strip():
-        logger.error("City parameter is required")
-        return None
+    if not city or not isinstance(city, str) or not city.strip():
+        logger.error("City parameter is required and must be a non-empty string")
+        raise WeatherServiceError("City parameter is required and must be a non-empty string")
     
-    if not isinstance(month, int) or not (1 <= month <= 12):
-        logger.error(f"Month must be an integer between 1 and 12, got {month}")
-        return None
+    city = city.strip()
     
-    # Load adapter based on config
-    if DATA_SOURCE == "dataset":
-        from .adapters import dataset as adapter
-        logger.info("Using dataset adapter for weather lookup")
-    elif DATA_SOURCE == "api":
-        from .adapters import api as adapter
-        logger.info("Using API adapter for weather lookup")
-    else:
-        logger.error(f"Unknown DATA_SOURCE: {DATA_SOURCE}")
-        return None
+    if not isinstance(days, int) or days < 1:
+        logger.error(f"Days parameter must be a positive integer, got: {days}")
+        raise WeatherServiceError(f"Days parameter must be a positive integer, got: {days}")
     
-    # Get raw weather data
+    if days > 16:
+        logger.warning(f"Requested {days} days, but OpenWeather forecast supports max 16 days. Capping to 16.")
+        days = 16
+    
+    # Call adapter to fetch raw forecast data
     try:
-        raw_weather = adapter.get_raw_weather(city=city, month=month)
+        logger.debug(f"Calling OpenWeather adapter for city='{city}'")
+        raw_data = fetch_weather_forecast_api(city=city)
+        logger.info(f"Successfully fetched raw weather data for city='{city}'")
+    except WeatherAPIError as e:
+        logger.error(f"OpenWeather API call failed: {e}")
+        raise WeatherServiceError(f"Failed to fetch weather data: {e}")
     except Exception as e:
-        logger.error(f"Adapter lookup failed: {e}")
-        return None
+        logger.error(f"Unexpected error calling weather adapter: {e}")
+        raise WeatherServiceError(f"Unexpected weather adapter error: {e}")
     
-    # Return None if no data found
-    if raw_weather is None:
-        logger.info(f"No weather data available for {city}, month {month}")
-        return None
-    
-    # Normalize result
+    # Call normalizer to convert raw data to WeatherSummary objects
     try:
-        weather = raw_to_weatherinfo(raw_weather)
-        logger.info(f"Successfully retrieved weather for {city}, month {month}: {weather.condition}")
-        return weather
+        logger.debug(f"Normalizing weather forecast data for city='{city}'")
+        summaries = normalize_weather_forecast(raw_data, city=city, max_days=days)
+        logger.info(f"Normalization complete: {len(summaries)} daily summaries created")
     except Exception as e:
-        logger.error(f"Failed to normalize weather data for {city}, month {month}: {e}")
-        return None
+        logger.error(f"Weather normalization failed: {e}")
+        raise WeatherServiceError(f"Failed to normalize weather data: {e}")
+    
+    # Limit results to requested days (defensive, normalizer should already do this)
+    summaries = summaries[:days]
+    
+    # Apply enrichment layer (intelligence engine)
+    try:
+        logger.debug(f"Applying weather intelligence enrichment for city='{city}'")
+        enrichment_result = enrich_weather_forecast(summaries)
+        logger.info(
+            f"Weather enrichment complete: {len(enrichment_result.enriched_days)} days enriched, "
+            f"{len(enrichment_result.trip_insights)} trip-level insights generated"
+        )
+        
+        # Extract enriched WeatherSummary objects for return
+        # TODO: Consider returning full EnrichedWeatherDay objects once consumer supports richer schema
+        enriched_summaries = [day.weather for day in enrichment_result.enriched_days]
+        
+    except Exception as e:
+        logger.warning(f"Weather enrichment failed, returning un-enriched summaries: {e}")
+        enriched_summaries = summaries  # Fallback to un-enriched if enrichment fails
+    
+    # Log result
+    if not enriched_summaries:
+        logger.warning(f"No weather forecast data available for city='{city}'")
+        return []
+    
+    logger.info(f"Returning {len(enriched_summaries)} weather forecast summaries for '{city}'")
+    return enriched_summaries
