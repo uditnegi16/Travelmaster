@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, Optional, List, Tuple
 from pydantic import BaseModel, Field
 
-from backend.app.shared.constants import (
+from app.shared.constants import (
     PREF_BUDGET_PREFERENCE,
     PREF_HOTEL_QUALITY,
     PRICE_BUDGET,

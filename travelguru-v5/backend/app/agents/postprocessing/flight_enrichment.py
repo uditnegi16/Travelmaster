@@ -20,8 +20,8 @@ import statistics
 
 from pydantic import BaseModel, Field
 
-from backend.app.shared.schemas import FlightOption
-from backend.app.shared.constants import (
+from app.shared.schemas import FlightOption
+from app.shared.constants import (
     # Insight types
     INSIGHT_TYPE_ADVANTAGE,
     INSIGHT_TYPE_CONSIDERATION,

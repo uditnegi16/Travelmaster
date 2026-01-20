@@ -13,8 +13,8 @@ from pathlib import Path
 
 from openai import OpenAI
 
-from backend.app.shared.schemas import TripResponse
-from backend.app.core.config import COMPOSER_MODEL, OPENAI_API_KEY
+from app.shared.schemas import TripResponse
+from app.core.config import COMPOSER_MODEL, OPENAI_API_KEY
 
 logger = logging.getLogger(__name__)
 

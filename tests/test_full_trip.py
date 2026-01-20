@@ -19,10 +19,10 @@ if sys.platform == 'win32':
         pass
 
 # Add parent directory to path for imports
-project_root = Path(__file__).resolve().parents[2]
+project_root = Path(__file__).resolve().parents[1] / "travelguru-v5" / "backend"
 sys.path.insert(0, str(project_root))
 
-from backend.app.agents.langgraph_agents.travel_planner_graph import run_travel_planner, TravelPlannerOrchestrator
+from app.agents.langgraph_agents.travel_planner_graph import run_travel_planner, TravelPlannerOrchestrator
 
 
 def print_separator(char="=", length=100):

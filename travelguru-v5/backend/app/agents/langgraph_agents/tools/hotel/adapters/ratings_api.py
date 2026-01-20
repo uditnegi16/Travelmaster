@@ -19,8 +19,8 @@ Architecture Layer: Adapter
 - ONLY raw API calls and error handling
 """
 
-from backend.app.core.amadeus_client import call_amadeus, get_amadeus_client
-from backend.app.core.logging import get_logger
+from app.core.amadeus_client import call_amadeus, get_amadeus_client
+from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 

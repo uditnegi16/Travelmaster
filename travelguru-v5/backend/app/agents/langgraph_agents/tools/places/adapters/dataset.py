@@ -5,7 +5,7 @@ import logging
 from functools import lru_cache
 from pathlib import Path
 
-from backend.app.core.config import PLACES_DATASET_PATH
+from app.core.config import PLACES_DATASET_PATH
 
 logger = logging.getLogger(__name__)
 

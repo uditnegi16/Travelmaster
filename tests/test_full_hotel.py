@@ -6,10 +6,10 @@ Tests hotel search with NLP integration and enrichment intelligence.
 import sys
 from pathlib import Path
 
-project_root = Path(__file__).resolve().parents[2]
+project_root = Path(__file__).resolve().parents[1] / "travelguru-v5" / "backend"
 sys.path.insert(0, str(project_root))
 
-from backend.app.tools.hotel.service import search_hotels, search_hotels_enriched
+from app.agents.langgraph_agents.tools.hotel.service import search_hotels, search_hotels_enriched
 
 # Configure UTF-8 encoding for Windows console
 if sys.platform == "win32":

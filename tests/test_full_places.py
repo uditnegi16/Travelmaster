@@ -6,12 +6,12 @@ Tests places search with NLP, enrichment, and knowledge intelligence.
 import sys
 from pathlib import Path
 
-project_root = Path(__file__).resolve().parents[2]
+project_root = Path(__file__).resolve().parents[1] / "travelguru-v5" / "backend"
 sys.path.insert(0, str(project_root))
 
-from backend.app.agents.nlp.places_intent_extractor import extract_places_intent
-from backend.app.tools.places.service import search_places
-from backend.app.agents.postprocessing.places_enrichment import enrich_places
+from app.agents.nlp.places_intent_extractor import extract_places_intent
+from app.agents.langgraph_agents.tools.places.service import search_places
+from app.agents.postprocessing.places_enrichment import enrich_places
 
 if sys.platform == "win32":
     import io

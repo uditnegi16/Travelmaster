@@ -12,7 +12,7 @@ Provides comprehensive budget analysis and enrichment capabilities:
 import logging
 from typing import Optional
 
-from backend.app.shared.schemas import (
+from app.shared.schemas import (
     FlightOption,
     HotelOption,
     PlaceOption,

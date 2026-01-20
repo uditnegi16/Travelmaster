@@ -23,8 +23,8 @@ from urllib.parse import quote
 
 import requests
 
-from backend.app.core.config import GOOGLE_MAPS_API_KEY
-from backend.app.core.logging import get_logger
+from app.core.config import GOOGLE_MAPS_API_KEY
+from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 

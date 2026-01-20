@@ -19,12 +19,12 @@ import sys
 from pathlib import Path
 from typing import Dict, Any
 
-project_root = Path(__file__).resolve().parents[2]
+project_root = Path(__file__).resolve().parents[1] / "travelguru-v5" / "backend"
 sys.path.insert(0, str(project_root))
 
-from backend.app.agents.nlp.flight_intent_extractor import extract_flight_intent
-from backend.app.tools.flight.service import search_flights
-from backend.app.agents.postprocessing.flight_enrichment import FlightIntelligenceEngine
+from app.agents.nlp.flight_intent_extractor import extract_flight_intent
+from app.agents.langgraph_agents.tools.flight.service import search_flights
+from app.agents.postprocessing.flight_enrichment import FlightIntelligenceEngine
 
 
 # Configure UTF-8 encoding for Windows console

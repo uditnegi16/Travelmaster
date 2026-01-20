@@ -7,8 +7,8 @@ travelguru_v5_dir = Path(__file__).resolve().parent.parent.parent
 if str(travelguru_v5_dir) not in sys.path:
     sys.path.insert(0, str(travelguru_v5_dir))
 
-from backend.app.agents.langgraph_agents.travel_planner_graph import generate_trip_plan
-from backend.app.shared.schemas import TripRequest
+from app.agents.langgraph_agents.travel_planner_graph import generate_trip_plan
+from app.shared.schemas import TripRequest
 
 st.set_page_config(
     page_title="TravelGuru Planner",

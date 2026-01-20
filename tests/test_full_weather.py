@@ -6,10 +6,10 @@ Shows weather intelligence with all enrichment layers.
 import sys
 from pathlib import Path
 
-project_root = Path(__file__).resolve().parents[2]
+project_root = Path(__file__).resolve().parents[1] / "travelguru-v5" / "backend"
 sys.path.insert(0, str(project_root))
 
-from backend.app.tools.weather.service import get_weather_forecast
+from app.agents.langgraph_agents.tools.weather.service import get_weather_forecast
 
 if sys.platform == "win32":
     import io
@@ -229,7 +229,7 @@ def main():
         
         # The service returns enriched data via TripWeatherAnalysis
         # We need to access it through the service's enrichment
-        from backend.app.agents.postprocessing.weather_enrichment import enrich_weather_forecast
+        from app.agents.postprocessing.weather_enrichment import enrich_weather_forecast
         
         analysis = enrich_weather_forecast(forecast)
         

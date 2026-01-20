@@ -6,11 +6,11 @@ Demonstrates comprehensive budget analysis with intelligence and recommendations
 import sys
 from pathlib import Path
 
-project_root = Path(__file__).resolve().parents[2]
+project_root = Path(__file__).resolve().parents[1] / "travelguru-v5" / "backend"
 sys.path.insert(0, str(project_root))
 
-from backend.app.shared.schemas import FlightOption, HotelOption, PlaceOption
-from backend.app.tools.budget.service import compute_budget
+from app.shared.schemas import FlightOption, HotelOption, PlaceOption
+from app.agents.langgraph_agents.tools.budget.service import compute_budget
 
 
 def test_budget_with_enrichment():

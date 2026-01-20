@@ -27,7 +27,7 @@ def get_openai_client(client: Optional[OpenAI] = None) -> Optional[OpenAI]:
         return client
     
     try:
-        from backend.app.core.config import OPENAI_API_KEY
+        from app.core.config import OPENAI_API_KEY
         
         if not OPENAI_API_KEY:
             logger.warning("OPENAI_API_KEY not found in config - OpenAI features disabled")

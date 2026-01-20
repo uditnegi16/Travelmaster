@@ -19,7 +19,7 @@ Architecture Layer: Normalizer
 - ONLY data shape transformation and light filtering
 """
 
-from backend.app.shared.schemas import PlaceOption
+from app.shared.schemas import PlaceOption
 
 # Google price level to approximate INR mapping
 PRICE_MAP = {

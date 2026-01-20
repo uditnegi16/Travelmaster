@@ -3,14 +3,14 @@ Weather information service.
 Orchestrates weather forecast retrieval using OpenWeather API.
 """
 
-from backend.app.core.logging import get_logger
-from backend.app.shared.schemas import WeatherSummary
-from backend.app.tools.weather.adapters.openweather_api import (
+from app.core.logging import get_logger
+from app.shared.schemas import WeatherSummary
+from app.agents.langgraph_agents.tools.weather.adapters.openweather_api import (
     fetch_weather_forecast_api,
     WeatherAPIError,
 )
-from backend.app.tools.weather.normalize import normalize_weather_forecast
-from backend.app.agents.postprocessing.weather_enrichment import enrich_weather_forecast
+from app.agents.langgraph_agents.tools.weather.normalize import normalize_weather_forecast
+from app.agents.postprocessing.weather_enrichment import enrich_weather_forecast
 
 logger = get_logger(__name__)
 

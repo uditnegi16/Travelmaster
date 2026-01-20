@@ -19,14 +19,14 @@ from functools import wraps
 
 from amadeus import Client, ResponseError
 
-from backend.app.core.config import (
+from app.core.config import (
     AMADEUS_CLIENT_ID,
     AMADEUS_CLIENT_SECRET,
     AMADEUS_ENV,
     AMADEUS_TIMEOUT,
     AMADEUS_MAX_RETRIES,
 )
-from backend.app.core.logging import get_logger
+from app.core.logging import get_logger
 
 logger = get_logger("backend.app.core.amadeus_client")
 

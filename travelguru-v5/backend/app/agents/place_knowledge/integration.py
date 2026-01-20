@@ -7,7 +7,7 @@ import logging
 from typing import Optional, Dict, Any, List
 from openai import OpenAI
 
-from backend.app.shared.schemas import PlaceOption
+from app.shared.schemas import PlaceOption
 from .orchestrator import get_place_knowledge
 
 logger = logging.getLogger(__name__)

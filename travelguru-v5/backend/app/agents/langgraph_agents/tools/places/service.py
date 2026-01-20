@@ -18,12 +18,12 @@ Architecture Layer: Service
 - YES business logic and orchestration
 """
 
-from backend.app.core.logging import get_logger
-from backend.app.shared.schemas import PlaceOption
-from backend.app.tools.places.adapters.google_api import search_places_google_api
-from backend.app.tools.places.normalize import normalize_places
-from backend.app.agents.nlp.places_intent_extractor import extract_places_intent
-from backend.app.agents.postprocessing.places_enrichment import enrich_places, EnrichmentResult
+from app.core.logging import get_logger
+from app.shared.schemas import PlaceOption
+from app.agents.langgraph_agents.tools.places.adapters.google_api import search_places_google_api
+from app.agents.langgraph_agents.tools.places.normalize import normalize_places
+from app.agents.nlp.places_intent_extractor import extract_places_intent
+from app.agents.postprocessing.places_enrichment import enrich_places, EnrichmentResult
 
 logger = get_logger(__name__)
 

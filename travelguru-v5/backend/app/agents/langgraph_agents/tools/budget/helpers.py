@@ -2,7 +2,7 @@
 
 import logging
 
-from backend.app.shared.schemas import FlightOption, HotelOption, PlaceOption
+from app.shared.schemas import FlightOption, HotelOption, PlaceOption
 
 logger = logging.getLogger(__name__)
 
