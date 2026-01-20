@@ -99,19 +99,34 @@ def recommend_flights(
 def score_cab(row: pd.Series, user_pref: Dict) -> float:
     score = 0.0
 
-    score += -0.4 * row["price"]
-    score += -0.3 * row["distance_km"]
+    # 1️⃣ Route match (MOST IMPORTANT)
+    if (
+        row["pickup_location"] == user_pref.get("pickup_location")
+        and row["drop_location"] == user_pref.get("drop_location")
+    ):
+        score += 1.0
+    else:
+        score -= 0.5
 
-    if row["vehicle_type"] == user_pref.get("cab_type"):
+    # 2️⃣ Vehicle type preference (optional)
+    if user_pref.get("vehicle_type") and row["vehicle_type"] == user_pref["vehicle_type"]:
         score += 0.3
+
+    # 3️⃣ Lower price preferred
+    score += -0.4 * row["price"]
+
+    # 4️⃣ Shorter distance preferred
+    score += -0.3 * row["distance_km"]
 
     return score
 
+
 def recommend_cabs(
     cabs_df: pd.DataFrame,
-    agent_output: Dict,
+    agent_output: dict,
     top_k: int = 2
 ) -> pd.DataFrame:
+
     user_pref = agent_output
 
     df = cabs_df.copy()

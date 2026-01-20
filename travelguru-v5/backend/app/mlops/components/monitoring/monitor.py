@@ -1,49 +1,63 @@
+import os
 import pandas as pd
-from evidently import Report
+
+from evidently import Report, Dataset, DataDefinition
 from evidently.presets import DataDriftPreset
 
 import mlflow
-import os
 
 
-def run_hotel_drift_monitoring(reference_df, current_df, report_path="hotel_drift_report.html"):
+import mlflow
+
+mlflow.set_tracking_uri("file:./mlruns")
+mlflow.set_experiment("travelguru-drift-monitoring")
+
+
+
+# =========================
+# HOTEL DRIFT MONITORING
+# =========================
+def run_hotel_drift_monitoring(
+    reference_df: pd.DataFrame,
+    current_df: pd.DataFrame,
+    report_path: str = "artifacts/drift/hotel/hotel_drift_report.html",
+):
+    os.makedirs(os.path.dirname(report_path), exist_ok=True)
+
     hotel_features = ["city", "rating", "price_per_night", "star_category"]
     reference_df = reference_df[hotel_features].copy()
     current_df = current_df[hotel_features].copy()
 
-    report = Report(metrics=[DataDriftPreset()])
-    report.run(reference_data=reference_df, current_data=current_df)
-    report.save_html(report_path)
+    # Define column types
+    data_def = DataDefinition(
+        categorical_columns=["city", "star_category"],
+        numerical_columns=["rating", "price_per_night"],
+    )  # [web:17]
+
+    ref_dataset = Dataset.from_pandas(reference_df, data_definition=data_def)
+    cur_dataset = Dataset.from_pandas(current_df, data_definition=data_def)  # [web:17]
+
+    report = Report(metrics=[DataDriftPreset()])  # [web:21]
+    evaluation = report.run(current_data=cur_dataset, reference_data=ref_dataset)  # [web:15]
+
+    evaluation.save_html(report_path)  # [web:13]
 
     # MLflow logging
     with mlflow.start_run(run_name="hotel_data_drift"):
-        mlflow.log_artifact(report_path, artifact_path="drift_reports")
+        mlflow.log_artifact(report_path, artifact_path="drift_reports/hotel")
         mlflow.log_param("entity", "hotel")
         mlflow.log_param("monitored_features", ",".join(hotel_features))
 
-    print("✅ Hotel drift monitoring completed")
+    print("✅ Hotel drift monitoring completed:", report_path)
 
 
-# HOW TO CALL THIS (FROM PIPELINE OR NOTEBOOK)
-
-# from components.monitoring.monitor import run_hotel_drift_monitoring
-
-# # Reference = historical hotel data (training time)
-# reference_hotels = hotels_df_model.copy()
-
-# # Current = new hotel data (latest DB pull)
-# current_hotels = latest_hotels_df.copy()
-
-# run_hotel_drift_monitoring(
-#     reference_df=reference_hotels,
-#     current_df=current_hotels
-# )
-
-
+# =========================
+# FLIGHT DRIFT MONITORING
+# =========================
 def run_flight_drift_monitoring(
     reference_df: pd.DataFrame,
     current_df: pd.DataFrame,
-    artifact_dir: str = "artifacts/drift/flight"
+    artifact_dir: str = "artifacts/drift/flight",
 ):
     os.makedirs(artifact_dir, exist_ok=True)
 
@@ -53,28 +67,40 @@ def run_flight_drift_monitoring(
         "airline",
         "origin",
         "destination",
-        "cabin_class"
+        "cabin_class",
     ]
+    reference = reference_df[features].copy()
+    current = current_df[features].copy()
 
-    reference = reference_df[features]
-    current = current_df[features]
+    data_def = DataDefinition(
+        numerical_columns=["duration_minutes", "price"],
+        categorical_columns=["airline", "origin", "destination", "cabin_class"],
+    )  # [web:17]
 
-    report = Report(metrics=[DataDriftPreset()])
-    report.run(reference_data=reference, current_data=current)
+    ref_dataset = Dataset.from_pandas(reference, data_definition=data_def)
+    cur_dataset = Dataset.from_pandas(current, data_definition=data_def)  # [web:17]
+
+    report = Report(metrics=[DataDriftPreset()])  # [web:21]
+    evaluation = report.run(current_data=cur_dataset, reference_data=ref_dataset)  # [web:15]
 
     report_path = os.path.join(artifact_dir, "flight_drift_report.html")
-    report.save_html(report_path)
+    evaluation.save_html(report_path)  # [web:13]
 
-    mlflow.log_artifact(report_path, artifact_path="flight_drift")
+    with mlflow.start_run(run_name="flight_data_drift"):
+        mlflow.log_artifact(report_path, artifact_path="drift_reports/flight")
+        mlflow.log_param("entity", "flight")
+        mlflow.log_param("monitored_features", ",".join(features))
 
-    print("✅ Flight drift report generated")
-    
-    
-    
+    print("✅ Flight drift report generated:", report_path)
+
+
+# =========================
+# CAB DRIFT MONITORING
+# =========================
 def run_cab_drift_monitoring(
     reference_df: pd.DataFrame,
     current_df: pd.DataFrame,
-    artifact_dir: str = "artifacts/drift/cab"
+    artifact_dir: str = "artifacts/drift/cab",
 ):
     os.makedirs(artifact_dir, exist_ok=True)
 
@@ -84,30 +110,28 @@ def run_cab_drift_monitoring(
         "vehicle_type",
         "pickup_location",
         "drop_location",
-        "driver_rating"
+        "driver_rating",
     ]
+    reference = reference_df[features].copy()
+    current = current_df[features].copy()
 
-    reference = reference_df[features]
-    current = current_df[features]
+    data_def = DataDefinition(
+        numerical_columns=["distance_km", "price", "driver_rating"],
+        categorical_columns=["vehicle_type", "pickup_location", "drop_location"],
+    )  # [web:17]
 
-    report = Report(metrics=[DataDriftPreset()])
-    report.run(reference_data=reference, current_data=current)
+    ref_dataset = Dataset.from_pandas(reference, data_definition=data_def)
+    cur_dataset = Dataset.from_pandas(current, data_definition=data_def)  # [web:17]
+
+    report = Report(metrics=[DataDriftPreset()])  # [web:21]
+    evaluation = report.run(current_data=cur_dataset, reference_data=ref_dataset)  # [web:15]
 
     report_path = os.path.join(artifact_dir, "cab_drift_report.html")
-    report.save_html(report_path)
+    evaluation.save_html(report_path)  # [web:13]
 
-    mlflow.log_artifact(report_path, artifact_path="cab_drift")
+    with mlflow.start_run(run_name="cab_data_drift"):
+        mlflow.log_artifact(report_path, artifact_path="drift_reports/cab")
+        mlflow.log_param("entity", "cab")
+        mlflow.log_param("monitored_features", ",".join(features))
 
-    print("✅ Cab drift report generated")
-
-
-
-# from components.monitoring.monitor import (
-#     run_flight_drift_monitoring,
-#     run_hotel_drift_monitoring,
-#     run_cab_drift_monitoring
-# )
-
-# run_flight_drift_monitoring(train_flights_df, latest_flights_df)
-# run_hotel_drift_monitoring(train_hotels_df, latest_hotels_df)
-# run_cab_drift_monitoring(train_cabs_df, latest_cabs_df)
+    print("✅ Cab drift report generated:", report_path)
