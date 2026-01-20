@@ -1,0 +1,150 @@
+BASIC BUDGET SUMMARY
+--------------------------------------------------------------------------------
+Flights Cost:    Rs. 12,000
+Hotel Cost:      Rs. 32,000
+Activities Cost: Rs. 500
+Total Cost:      Rs. 44,500
+Currency:        INR
+
+================================================================================
+ENRICHMENT DETAILS
+================================================================================
+
+VERDICT:
+--------------------------------------------------------------------------------
+X Over Budget - Plan needs optimization before booking
+
+BUDGET HEALTH SCORE:
+--------------------------------------------------------------------------------
+Score: 0.0 / 10 (Critical)
+
+Based on:
+  - Over budget by 21.0%
+  - Hotel dominates at 53%
+  - Critical: over_budget
+  - Warning: hotel_expensive
+  - Warning: poor_value_distribution
+
+FULL COST BREAKDOWN:
+--------------------------------------------------------------------------------
+Flights:         Rs. 12,000
+Hotel:           Rs. 32,000
+Activities:      Rs. 500
+Local Transport: Rs. 2,500
+Food:            Rs. 8,000
+Buffer (10%):    Rs. 5,500
+                 --------------------
+TOTAL ESTIMATED: Rs. 60,500
+
+INTELLIGENCE METRICS:
+--------------------------------------------------------------------------------
+Cost per Day:    Rs. 12,100.00
+Cost per Person: Rs. 30,250.00
+Dominant Driver: hotel (52.9%)
+
+Category Distribution:
+  flights          19.8% #########
+  hotel            52.9% ##########################
+  activities        0.8% 
+  local_transport   4.1% ##
+  food             13.2% ######
+  buffer            9.1% ####
+
+TRIP CLASSIFICATION:
+--------------------------------------------------------------------------------
+Type:       Premium
+Threshold:  ₹6000-12000/person/day
+
+ISSUES DETECTED (3):
+--------------------------------------------------------------------------------
+[CRITICAL] over_budget
+  Current plan is 21% over budget (₹10,500 excess)
+  Impact: Rs. 10,500
+
+[WARNING] hotel_expensive
+  Hotel costs 53% of budget - consider lower star rating
+  Impact: Rs. 32,000
+
+[WARNING] poor_value_distribution
+  Only 0.8% allocated to activities - consider adding more experiences
+  Impact: Rs. 500
+
+RECOMMENDATIONS (4):
+--------------------------------------------------------------------------------
+1. [HIGH] HOTEL
+   Action: Switch to 4★ hotel to save approximately ₹9,600
+   Savings: Rs. 9,600
+
+2. [HIGH] FLIGHT
+   Action: Take train instead of flight to save approximately ₹7,200
+   Savings: Rs. 7,200
+
+3. [MEDIUM] DURATION
+   Action: Reduce trip by 1 night to save ₹9,300
+   Savings: Rs. 9,300
+
+4. [MEDIUM] HOTEL
+   Action: Hotel consumes 53% of budget - consider 3★ option
+   Savings: Rs. 8,000
+
+
+SIMULATION - If you apply top recommendations:
+================================================================================
+
+Applying 3 recommendation(s):
+  1. Switch to 4★ hotel to save approximately ₹9,600
+  2. Take train instead of flight to save approximately ₹7,200
+  3. Reduce trip by 1 night to save ₹9,300
+
+Original Total:      Rs. 60,500
+Total Savings:       Rs. 26,100
+New Estimated Total: Rs. 34,400
+
+Status: ✓ Within Budget
+================================================================================
+TEST COMPLETED
+================================================================================
+
+
+================================================================================
+BUDGET ENRICHMENT TEST - SCENARIO 2: Well-Balanced Trip
+================================================================================
+
+BASIC BUDGET SUMMARY
+--------------------------------------------------------------------------------
+Flights Cost:    Rs. 3,500
+Hotel Cost:      Rs. 6,000
+Activities Cost: Rs. 1,600
+Total Cost:      Rs. 11,100
+Currency:        INR
+
+================================================================================
+ENRICHMENT DETAILS
+================================================================================
+
+VERDICT:
+--------------------------------------------------------------------------------
+✓ Within Budget - Well balanced plan
+
+BUDGET HEALTH SCORE:
+--------------------------------------------------------------------------------
+Score: 10.0 / 10 (Excellent)
+
+Based on:
+  - Under budget by 28.3%
+
+FULL COST BREAKDOWN:
+--------------------------------------------------------------------------------
+Flights:         Rs. 3,500
+Hotel:           Rs. 6,000
+Activities:      Rs. 1,600
+Local Transport: Rs. 2,000
+Food:            Rs. 3,200
+Buffer (10%):    Rs. 1,630
+                 --------------------
+TOTAL ESTIMATED: Rs. 17,930
+
+INTELLIGENCE METRICS:
+--------------------------------------------------------------------------------
+Cost per Day:    Rs. 4,482.50
+Dominant Driver: hotel (33.5%)

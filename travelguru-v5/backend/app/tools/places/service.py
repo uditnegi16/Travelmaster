@@ -22,6 +22,8 @@ from backend.app.core.logging import get_logger
 from backend.app.shared.schemas import PlaceOption
 from backend.app.tools.places.adapters.google_api import search_places_google_api
 from backend.app.tools.places.normalize import normalize_places
+from backend.app.agents.nlp.places_intent_extractor import extract_places_intent
+from backend.app.agents.postprocessing.places_enrichment import enrich_places, EnrichmentResult
 
 logger = get_logger(__name__)
 
@@ -36,22 +38,34 @@ class PlacesSearchError(RuntimeError):
 
 
 def search_places(
-    city: str,
+    query: str | None = None,
+    *,
+    city: str | None = None,
     radius_km: int = 10,
     limit: int = 10,
     min_rating: float = 4.0,
+    max_entry_fee: int | None = None,
+    categories: list[str] | None = None,
+    preferences: dict | None = None,
 ) -> list[PlaceOption]:
     """
-    Search for tourist places in a city with filtering and sorting.
+    Search for tourist places using natural language query or structured parameters.
     
-    This is the main business orchestrator that:
-    1. Validates input parameters
-    2. Calls Google Places API adapter
-    3. Normalizes raw data into PlaceOption schema
-    4. Applies business rules (rating filtering, sorting by rating, limiting)
+    This is the main business orchestrator that supports two modes:
+    1. NLP Mode: Pass a natural language query string
+    2. Structured Mode: Pass individual parameters
+    
+    The function performs:
+    - NLP intent extraction (if query provided)
+    - API adapter calls
+    - Data normalization
+    - Enrichment with intelligence layer
+    - Business rule application (filtering, sorting, limiting)
     
     Args:
-        city: City name to search places in (e.g., "Paris", "New Delhi").
+        query: Natural language query (e.g., "Find free museums in Delhi").
+               If provided, structured params will be extracted from it.
+        city: City name to search places in (required if query not provided).
         radius_km: Search radius in kilometers from city center.
                    Must be between 1 and 50. Defaults to 10.
         limit: Maximum number of results to return.
@@ -59,24 +73,55 @@ def search_places(
         min_rating: Minimum rating filter (0-5 scale).
                     Places below this rating are excluded.
                     Must be between 0 and 5. Defaults to 4.0.
+        max_entry_fee: Optional maximum entry fee filter in INR.
+        categories: Optional list of place categories to filter by.
+        preferences: User preferences dict for enrichment personalization.
     
     Returns:
-        List of PlaceOption objects, sorted by rating (descending).
+        List of PlaceOption objects, enriched and sorted by relevance.
         Empty list if no places found or all filtered out.
     
     Raises:
-        ValueError: If inputs are invalid.
+        ValueError: If neither query nor city is provided, or invalid params.
         PlacesSearchError: If any orchestration step fails.
     
-    Example:
-        >>> places = search_places("Paris", radius_km=5, limit=5, min_rating=4.5)
-        >>> len(places)
-        5
-        >>> places[0].rating >= 4.5
-        True
-        >>> places[0].rating >= places[1].rating
-        True
+    Examples:
+        # NLP mode
+        >>> places = search_places("Find free museums in Delhi")
+        
+        # Structured mode
+        >>> places = search_places(city="Paris", max_entry_fee=500, limit=5)
     """
+    # NLP extraction if query provided
+    if query:
+        logger.info(f"Extracting intent from natural language query: '{query}'")
+        try:
+            intent = extract_places_intent(query)
+            logger.info(f"Extracted intent: city={intent.city}, categories={intent.categories}, "
+                       f"max_fee={intent.max_entry_fee}, min_rating={intent.min_rating}")
+            
+            # Override parameters with extracted intent
+            city = intent.city
+            if intent.categories:
+                categories = intent.categories
+            if intent.max_entry_fee is not None:
+                max_entry_fee = intent.max_entry_fee
+            if intent.min_rating is not None:
+                min_rating = intent.min_rating
+            if intent.radius_km != 10:  # If not default
+                radius_km = intent.radius_km
+            if intent.limit != 10:  # If not default
+                limit = intent.limit
+            if intent.preferences:
+                # Merge extracted preferences with provided ones
+                preferences = {**(preferences or {}), **intent.preferences}
+        except Exception as e:
+            logger.warning(f"NLP extraction failed: {e}. Falling back to structured parameters.")
+    
+    # Validate that we have a city
+    if not city:
+        raise ValueError("Either 'query' or 'city' parameter must be provided")
+    
     # Input validation
     if not isinstance(city, str) or not city.strip():
         raise ValueError("city must be a non-empty string")
@@ -92,9 +137,13 @@ def search_places(
     if not isinstance(min_rating, (int, float)) or min_rating < 0 or min_rating > 5:
         raise ValueError("min_rating must be between 0 and 5")
     
+    if max_entry_fee is not None and (not isinstance(max_entry_fee, int) or max_entry_fee < 0):
+        raise ValueError("max_entry_fee must be a non-negative integer")
+    
     logger.info(
         f"Starting places search for city='{city}', "
-        f"radius={radius_km}km, limit={limit}, min_rating={min_rating}"
+        f"radius={radius_km}km, limit={limit}, min_rating={min_rating}, "
+        f"max_fee={max_entry_fee}, categories={categories}"
     )
     
     try:
@@ -144,16 +193,57 @@ def search_places(
             f"{places_before_filter} -> {len(places)} places"
         )
         
+        # Filter by max entry fee if specified
+        if max_entry_fee is not None:
+            places_before_fee_filter = len(places)
+            places = [p for p in places if p.entry_fee <= max_entry_fee]
+            logger.info(
+                f"Entry fee filter (max={max_entry_fee}): "
+                f"{places_before_fee_filter} -> {len(places)} places"
+            )
+        
+        # Filter by categories if specified
+        if categories:
+            places_before_category_filter = len(places)
+            categories_lower = [c.lower() for c in categories]
+            places = [p for p in places if p.category.lower() in categories_lower]
+            logger.info(
+                f"Category filter ({categories}): "
+                f"{places_before_category_filter} -> {len(places)} places"
+            )
+        
         # Early return if all filtered out
         if not places:
             logger.info(
-                f"No places meet min_rating={min_rating} for city '{city}'"
+                f"No places meet all filter criteria for city '{city}'"
             )
             return []
         
-        # Sort by rating (descending - highest rated first)
-        places.sort(key=lambda p: p.rating, reverse=True)
-        logger.debug("Sorted places by rating (descending)")
+        # Apply enrichment with intelligence layer
+        logger.info("Applying places enrichment with intelligence layer...")
+        try:
+            enrichment_result = enrich_places(places, preferences)
+            
+            # Extract enriched places (already ranked and sorted by match_score)
+            enriched_places = enrichment_result.enriched_places
+            
+            # Log enrichment results for debugging
+            logger.info(
+                f"Enrichment complete. Market analysis: "
+                f"{enrichment_result.market_analysis.get('total_options', 0)} options analyzed."
+            )
+            logger.info(f"Best place: {enrichment_result.best_choice}")
+            
+            # Extract the original PlaceOption from enriched results
+            # They are already sorted by rank (best first)
+            # TODO: Later, return EnrichedPlace objects for rich itinerary composition
+            # (with insights, tags, scores, reasoning) instead of just PlaceOption
+            places = [ep.place for ep in enriched_places]
+            
+        except Exception as e:
+            logger.warning(f"Enrichment failed: {e}. Continuing with basic sorting.")
+            # Fallback to simple rating-based sorting
+            places.sort(key=lambda p: p.rating, reverse=True)
         
         # Limit results
         if len(places) > limit:

@@ -9,6 +9,7 @@ from backend.app.shared.schemas import FlightOption
 from backend.app.tools.flight.adapters.api import search_flights_api
 from backend.app.tools.flight.normalize import normalize_flight_offers
 from backend.app.core.amadeus_iata import resolve_city_to_iata, UnknownCityError
+from backend.app.agents.postprocessing.flight_enrichment import FlightIntelligenceEngine
 
 
 logger = get_logger(__name__)
@@ -22,7 +23,9 @@ def search_flights(
     from_city: str,
     to_city: str,
     date: str | None = None,
+    adults: int = 1,
     max_price: int | None = None,
+    preferences: dict | None = None,
     limit: int = 5,
     sort_by_price: bool = True,
 ) -> list[FlightOption]:
@@ -37,7 +40,9 @@ def search_flights(
         from_city: Departure city name
         to_city: Arrival city name
         date: Departure date in YYYY-MM-DD format (optional)
+        adults: Number of adult travelers (default: 1)
         max_price: Maximum price filter in INR (optional)
+        preferences: User preferences dict (budget_preference, timing_preference, avoid_layovers, speed) (optional)
         limit: Maximum number of results to return (default: 5)
         sort_by_price: Whether to sort by price ascending (default: True)
         
@@ -49,8 +54,8 @@ def search_flights(
         FlightSearchError: If flight search operation fails
     """
     logger.info(
-        f"Flight search requested: {from_city} → {to_city}, date={date}, "
-        f"max_price={max_price}, limit={limit}"
+        f"Flight search requested: {from_city} → {to_city}, date={date}, adults={adults}, "
+        f"max_price={max_price}, preferences={preferences}, limit={limit}"
     )
     
     try:
@@ -63,20 +68,70 @@ def search_flights(
             origin_iata=origin_iata,
             destination_iata=destination_iata,
             departure_date=date if date else "",
-            adults=1,
+            adults=adults,
             currency=DEFAULT_CURRENCY,
         )
         
         flights = normalize_flight_offers(raw_offers)
         
-        if max_price is not None:
-            logger.info(f"Filtering flights by max_price: {max_price}")
-            flights = [f for f in flights if f.price <= max_price]
-        
-        if sort_by_price:
-            flights.sort(key=lambda f: f.price)
-        
-        flights = flights[:limit]
+        # Apply enrichment if preferences provided or if enrichment is beneficial
+        # Note: Enrichment adds intelligence, insights, and ranking even without explicit preferences
+        if preferences or len(flights) > 1:
+            logger.info("Applying flight enrichment with intelligence layer...")
+            try:
+                enricher = FlightIntelligenceEngine()
+                enrichment_result = enricher.enrich_flights(flights)
+                
+                # Extract enriched flights
+                enriched_flights = enrichment_result.enriched_flights
+                
+                # Filter by max_price if specified (post-enrichment)
+                if max_price is not None:
+                    logger.info(f"Filtering enriched flights by max_price: {max_price}")
+                    enriched_flights = [
+                        ef for ef in enriched_flights 
+                        if ef.flight.price <= max_price
+                    ]
+                
+                # Sort by rank (already computed by enrichment)
+                # Enrichment ranks flights by convenience score
+                enriched_flights.sort(key=lambda ef: ef.rank)
+                
+                # Limit results
+                enriched_flights = enriched_flights[:limit]
+                
+                # Extract the underlying FlightOption objects for backward compatibility
+                # TODO: Return enriched flights directly once consumers are updated
+                flights = [ef.flight for ef in enriched_flights]
+                
+                logger.info(f"Enrichment complete. Returning {len(flights)} enriched flights")
+                logger.info(f"Market analysis: {enrichment_result.market_analysis}")
+                if enrichment_result.travel_tips:
+                    logger.info(f"Travel tips: {enrichment_result.travel_tips}")
+                
+            except Exception as e:
+                # If enrichment fails, fall back to raw flights
+                logger.warning(f"Enrichment failed: {e}. Falling back to raw flights.")
+                
+                # Apply original filtering and sorting
+                if max_price is not None:
+                    logger.info(f"Filtering flights by max_price: {max_price}")
+                    flights = [f for f in flights if f.price <= max_price]
+                
+                if sort_by_price:
+                    flights.sort(key=lambda f: f.price)
+                
+                flights = flights[:limit]
+        else:
+            # No preferences and single flight - skip enrichment
+            if max_price is not None:
+                logger.info(f"Filtering flights by max_price: {max_price}")
+                flights = [f for f in flights if f.price <= max_price]
+            
+            if sort_by_price:
+                flights.sort(key=lambda f: f.price)
+            
+            flights = flights[:limit]
         
         logger.info(f"Returning {len(flights)} flights")
         return flights

@@ -59,6 +59,13 @@ GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY")
 GOOGLE_MAPS_TIMEOUT = int(os.getenv("GOOGLE_MAPS_TIMEOUT", "30"))
 
 # ============================================================================
+# WEATHER DATA API CONFIGURATION
+# ============================================================================
+
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
+OPENWEATHER_TIMEOUT = int(os.getenv("OPENWEATHER_TIMEOUT", "20"))
+
+# ============================================================================
 # LLM CONFIGURATION
 # ============================================================================
 
@@ -66,9 +73,9 @@ GOOGLE_MAPS_TIMEOUT = int(os.getenv("GOOGLE_MAPS_TIMEOUT", "30"))
 PLANNER_LLM_PROVIDER = "openai"
 PLANNER_MODEL = os.getenv("PLANNER_MODEL", "gpt-4.1")
 
-# Composer LLM
+# Composer LLM (multi-pass chunked generation with GPT-4.1)
 COMPOSER_LLM_PROVIDER = "openai"
-COMPOSER_MODEL = os.getenv("COMPOSER_MODEL", "gpt-4o-mini")
+COMPOSER_MODEL = os.getenv("COMPOSER_MODEL", "gpt-4.1")
 
 # ============================================================================
 # RUNTIME CONSTANTS
