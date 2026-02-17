@@ -1,0 +1,23 @@
+entity: flight
+scoring_type: weighted_sum
+
+weights:
+  price: 0.45
+  duration_minutes: 0.35
+  airline: 0.10
+  cabin_class: 0.10
+
+normalization:
+  price: inverse_min_max
+  duration_minutes: inverse_min_max
+
+filters:
+  origin_required: true
+  destination_required: true
+  max_price: null
+  max_duration_minutes: null
+
+ranking:
+  sort_by: score
+  order: descending
+  top_k: 2

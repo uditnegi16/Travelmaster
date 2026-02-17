@@ -1,1 +1,0 @@
-"""Places and attractions tools"""

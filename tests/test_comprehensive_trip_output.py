@@ -260,7 +260,7 @@ def test_comprehensive_trip_planning():
     print()
     
     # Define user query
-    user_query = "Plan a 5 day romantic trip for 2 adults from Delhi to Goa starting February 12, 2026 with a budget of 80000 rupees"
+    user_query = "Plan a 1 day romantic trip for 2 adults from Delhi to Goa starting February 12, 2026 with a budget of 80000 rupees"
     
     print(f"📋 User Query: {user_query}")
     print()

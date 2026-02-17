@@ -1,6 +1,0 @@
-artifact_location: file:D:/labmentix/major/TravelGuru/travelguru-v5/backend/app/mlops/mlruns/162806765193839091
-creation_time: 1768744307411
-experiment_id: '162806765193839091'
-last_update_time: 1768744307411
-lifecycle_stage: active
-name: travelguru-drift-monitoring
