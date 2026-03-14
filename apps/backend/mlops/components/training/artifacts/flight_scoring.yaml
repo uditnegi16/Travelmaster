@@ -12,12 +12,15 @@ normalization:
   duration_minutes: inverse_min_max
 
 filters:
-  origin_required: true
-  destination_required: true
+  # FIX: was true — caused ALL agent flights to be dropped because
+  # agent data doesn't always include origin/destination fields.
+  # The session_routes.py now enriches rows before ranking.
+  origin_required: false
+  destination_required: false
   max_price: null
   max_duration_minutes: null
 
 ranking:
   sort_by: score
   order: descending
-  top_k: 2
+  top_k: 3

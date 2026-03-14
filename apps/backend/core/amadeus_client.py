@@ -11,6 +11,8 @@ This module provides a thread-safe singleton client with:
 """
 
 from __future__ import annotations
+import json
+import random
 
 import time
 import threading
@@ -29,7 +31,12 @@ from core.config import (
 from core.logging import get_logger
 
 logger = get_logger("backend.app.core.amadeus_client")
-
+logger.info(
+    "Amadeus config loaded: env=%s client_id=%s secret_set=%s",
+    AMADEUS_ENV,
+    (AMADEUS_CLIENT_ID[:4] + "..." + AMADEUS_CLIENT_ID[-4:]) if AMADEUS_CLIENT_ID else None,
+    bool(AMADEUS_CLIENT_SECRET and AMADEUS_CLIENT_SECRET.strip()),
+)
 
 # ========================================
 # Custom Exceptions
@@ -248,8 +255,28 @@ def get_amadeus_client() -> Client:
     Raises:
         AmadeusConfigError: If configuration is invalid or client creation fails.
     """
+    if not (AMADEUS_CLIENT_ID and AMADEUS_CLIENT_ID.strip()):
+        raise RuntimeError("AMADEUS_CLIENT_ID is missing/blank")
+    if not (AMADEUS_CLIENT_SECRET and AMADEUS_CLIENT_SECRET.strip()):
+        raise RuntimeError("AMADEUS_CLIENT_SECRET is missing/blank")
     return _AmadeusClientManager.get_client()
 
+def ensure_amadeus_healthy() -> None:
+    """
+    Quick sanity check to fail fast when Amadeus creds/env are missing or API is down.
+    Raises AmadeusAPIError if unhealthy.
+    """
+    client = get_amadeus_client()
+
+    # Cheap endpoint that requires auth; returns OK if token works.
+    try:
+        # Airline list is a lightweight call
+        call_amadeus(
+            fn=client.reference_data.airlines.get,
+            airlineCodes="AI",  # Air India
+        )
+    except Exception as e:
+        raise AmadeusAPIError(f"Amadeus health check failed: {e}") from e
 
 def call_amadeus(fn: Callable[..., Any], **kwargs) -> Any:
     """
@@ -312,10 +339,13 @@ def call_amadeus(fn: Callable[..., Any], **kwargs) -> Any:
             # Extract rate limit headers if available
             rate_limit_info = _extract_rate_limit_headers(result)
             
+            endpoint = _infer_endpoint(fn)
             log_extra = {
-                "function": fn.__name__ if hasattr(fn, '__name__') else str(fn),
+                "endpoint": endpoint,
+                "function": fn.__name__ if hasattr(fn, "__name__") else str(fn),
                 "attempt": attempt + 1,
                 "elapsed_seconds": round(elapsed, 3),
+                "params": _safe_params(kwargs),
             }
             
             if rate_limit_info:
@@ -335,6 +365,8 @@ def call_amadeus(fn: Callable[..., Any], **kwargs) -> Any:
         except ResponseError as e:
             # Amadeus SDK exception
             status_code = getattr(e.response, 'status_code', None)
+            err_meta = _extract_error_payload(e)
+            endpoint = _infer_endpoint(fn)
             error_detail = str(e)
             
             # Extract endpoint for future per-endpoint retry logic
@@ -352,6 +384,10 @@ def call_amadeus(fn: Callable[..., Any], **kwargs) -> Any:
                     "status_code": status_code,
                     "error": error_detail,
                     "retryable": is_retryable,
+                    "endpoint": endpoint,
+                    "params": _safe_params(kwargs),
+                    "request_id": err_meta.get("request_id"),
+                    "error_body_preview": err_meta.get("error_body_preview")
                 }
             )
             
@@ -370,7 +406,8 @@ def call_amadeus(fn: Callable[..., Any], **kwargs) -> Any:
                 raise AmadeusAPIError(msg) from e
             
             # Exponential backoff
-            delay = base_delay * (2 ** attempt)
+            delay = min(30.0, base_delay * (2 ** attempt))
+            delay = delay + random.uniform(0.0, 0.5)  # jitter
             logger.info(f"Retrying in {delay}s...")
             time.sleep(delay)
             
@@ -400,7 +437,8 @@ def call_amadeus(fn: Callable[..., Any], **kwargs) -> Any:
                 raise AmadeusAPIError(msg) from e
             
             # Exponential backoff
-            delay = base_delay * (2 ** attempt)
+            delay = min(30.0, base_delay * (2 ** attempt))
+            delay = delay + random.uniform(0.0, 0.5)  # jitter
             logger.info(f"Retrying in {delay}s...")
             time.sleep(delay)
     
@@ -459,6 +497,12 @@ def health_check() -> bool:
             exc_info=True,
         )
         return False
+# ========================================
+# Health Gate (Cached)
+# ========================================
+_HEALTH_CACHE_TTL_SECONDS = 60
+_last_health_check_ts: float = 0.0
+_last_health_check_ok: bool = True
 
 
 # ========================================
@@ -482,6 +526,45 @@ def health_check() -> bool:
 #         'max_retries_override': 3,
 #     },
 # }
+
+
+
+def _infer_endpoint(fn: Callable[..., Any]) -> str:
+    return getattr(fn, "__qualname__", None) or getattr(fn, "__name__", None) or str(fn)
+
+def _safe_params(kwargs: dict[str, Any]) -> dict[str, Any]:
+    # keep params visible but avoid huge logs
+    safe = dict(kwargs or {})
+    # trim long strings/lists if needed
+    for k, v in list(safe.items()):
+        if isinstance(v, str) and len(v) > 120:
+            safe[k] = v[:120] + "…"
+        if isinstance(v, list) and len(v) > 20:
+            safe[k] = v[:20] + ["…"]
+    return safe
+
+def _extract_error_payload(e: ResponseError) -> dict[str, Any]:
+    resp = getattr(e, "response", None)
+    status_code = getattr(resp, "status_code", None)
+    headers = getattr(resp, "headers", None) or {}
+    # body/result varies by SDK versions
+    body_obj = getattr(resp, "body", None) or getattr(resp, "result", None) or getattr(resp, "data", None)
+
+    body_preview = None
+    try:
+        if isinstance(body_obj, (dict, list)):
+            body_preview = json.dumps(body_obj)[:800]
+        elif body_obj is not None:
+            body_preview = str(body_obj)[:800]
+    except Exception:
+        body_preview = None
+
+    return {
+        "status_code": status_code,
+        "request_id": headers.get("X-Request-Id") or headers.get("x-request-id"),
+        "error_body_preview": body_preview,
+    }
+
 
 def _is_retryable_error(status_code: Optional[int], endpoint: Optional[str] = None) -> bool:
     """

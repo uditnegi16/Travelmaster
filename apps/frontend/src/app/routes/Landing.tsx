@@ -60,7 +60,7 @@ export default function Landing() {
   if (!isLoaded) return null;
 
   if (isSignedIn) {
-    return <Navigate to="/app/dashboard" replace />;
+    return <Navigate to="/welcome" replace />;
   }
   return (
     <div className="min-h-screen bg-black text-white">

@@ -34,9 +34,9 @@ PLACES_DATASET_PATH = DATA_DIR / "places.json"
 # ============================================================================
 # ENVIRONMENT VARIABLES 
 # ============================================================================
-
 ENV: Literal["dev", "prod"] = os.getenv("ENV", "dev")  # type: ignore
 OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
+OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "")
 if not OPENAI_API_KEY:
     raise RuntimeError("OPENAI_API_KEY environment variable is not set")
 DATA_SOURCE: Literal["dataset", "api"] = os.getenv("DATA_SOURCE", "dataset")  # type: ignore

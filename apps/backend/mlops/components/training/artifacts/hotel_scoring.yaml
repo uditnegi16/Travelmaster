@@ -12,11 +12,13 @@ normalization:
   price_per_night: inverse_min_max
 
 filters:
-  min_rating: 3.5
+  min_rating: 0.0
   max_price_per_night: null
-  city_required: true
+  # FIX: was true — caused all hotels to be dropped when city field
+  # didn't exactly match. session_routes.py now enriches rows with city.
+  city_required: false
 
 ranking:
   sort_by: score
   order: descending
-  top_k: 10
+  top_k: 5

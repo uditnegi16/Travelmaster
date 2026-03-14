@@ -1,0 +1,32 @@
+{
+  "entity": "hotel",
+  "primary_key": "hotel_id",
+  "features": {
+    "city": {
+      "type": "categorical",
+      "usage": "filter"
+    },
+    "rating": {
+      "type": "numeric",
+      "usage": "score"
+    },
+    "price_per_night": {
+      "type": "numeric",
+      "usage": "score"
+    },
+    "star_category": {
+      "type": "ordinal",
+      "usage": "score"
+    }
+  },
+  "ignored_features": [
+    "hotel_name",
+    "amenities"
+  ],
+  "future_features": [
+    "zone",
+    "distance_from_center",
+    "amenity_score",
+    "seasonal_popularity"
+  ]
+}

@@ -1,0 +1,14 @@
+artifact_uri: file:D:/labmentix/major/TravelGuru/travelguru-v5/backend/app/mlops/mlruns/162806765193839091/bcca18e28ded472db826d2f7e0467555/artifacts
+end_time: 1768744313331
+entry_point_name: ''
+experiment_id: '162806765193839091'
+lifecycle_stage: active
+run_id: bcca18e28ded472db826d2f7e0467555
+run_name: hotel_data_drift
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1768744313280
+status: 3
+tags: []
+user_id: uditn

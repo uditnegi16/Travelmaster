@@ -1,99 +1,85 @@
-import { BrowserRouter, Routes, Route, Navigate, Link, Outlet } from "react-router-dom";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  useAuth,
-} from "@clerk/clerk-react";
-import Trips from "./app/routes/Trip";
-
+// src/App.tsx
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
+import { useEffect, useState } from "react";
 import ProtectedRoute from "./app/layout/ProtectedRoute";
 import AppShell from "./app/layout/AppShell";
-import TripNew from "./app/routes/TripNew";
-
 import Dashboard from "./app/routes/Dashboard";
+import Trips from "./app/routes/Trip";
+import TripNew from "./app/routes/TripNew";
 import Saved from "./app/routes/Saved";
 import Account from "./app/routes/Account";
 import SessionDetail from "./app/routes/SessionDetail";
 import LandingPage from "./app/routes/Landing";
 import NotFound from "./app/routes/NotFound";
+import ErrorBoundary from "./app/layout/ErrorBoundary";
+import AdminShell from "./app/routes/admin/AdminShell";
+import AdminDashboard from "./app/routes/admin/AdminDashboard";
+import AdminUsers from "./app/routes/admin/AdminUsers";
+import AdminHealth from "./app/routes/admin/AdminHealth";
+import AdminConfig from "./app/routes/admin/AdminConfig";
+import AdminAuditLog from "./app/routes/admin/AdminAuditLog";
+import SharedTrip from "./app/routes/Shared_Trip";
+function WelcomeRedirect() {
+  const { isSignedIn, isLoaded, getToken } = useAuth();
+  const [redirect, setRedirect] = useState<string | null>(null);
 
-function AfterLoginLanding() {
-  const { isSignedIn, isLoaded } = useAuth();
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
+    (async () => {
+      try {
+        const token = await getToken();
+        const res = await fetch("http://127.0.0.1:8000/admin/analytics", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setRedirect(res.ok ? "/admin/dashboard" : "/app/dashboard");
+      } catch {
+        setRedirect("/app/dashboard");
+      }
+    })();
+  }, [isLoaded, isSignedIn]);
 
-  // Avoid flicker while Clerk loads
-  if (!isLoaded) return null;
-
-  // If user is not signed in, they should never see this page
-  if (!isSignedIn) {
-    return <Navigate to="/" replace />;
-  }
-
-  // Signed in: show your post-login UI
-  return (
-    <div className="min-h-screen bg-[#060913] text-slate-100">
-      <header className="border-b border-white/10">
-        <div className="container-page flex items-center justify-between py-5">
-          <Link to="/" className="font-extrabold text-lg">TravelGuru</Link>
-
-          <SignedIn>
-            <Link to="/app/dashboard" className="btn btn-primary">Open App</Link>
-          </SignedIn>
-        </div>
-      </header>
-
-      <main className="container-page py-14">
-        <div className="card p-8 md:p-12">
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
-            Welcome to TravelGuru
-          </h1>
-          <p className="muted mt-4 max-w-2xl">
-            Phase-1 is DB-only: dashboard, sessions, saved trips, and account. Agent chat comes later.
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/app/dashboard" className="btn btn-primary">Go to dashboard</Link>
-            <Link to="/app/account" className="btn">Account</Link>
-            <Link to="/app/saved" className="btn">Saved Trips</Link>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
+  if (!isLoaded || !isSignedIn) return null;
+  if (!redirect) return <div className="min-h-screen bg-black" />;
+  return <Navigate to={redirect} replace />;
 }
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public landing page */}
-        <Route path="/" element={<LandingPage />} />
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/"        element={<LandingPage />} />
+          <Route path="/welcome" element={<WelcomeRedirect />} />
 
-        {/* After-login landing page */}
-        <Route path="/welcome" element={<AfterLoginLanding />} />
-
-        {/* Protected app */}
-        <Route path="/app" element={<ProtectedRoute />}>
-          <Route element={<AppShell />}>
-            <Route path="dashboard" element={<Dashboard />} />
-
-            <Route path="trips" element={<Trips />} />
-            <Route path="trips/new" element={<TripNew />} />
-
-            <Route path="saved" element={<Saved />} />
-            <Route path="account" element={<Account />} />
-
-            <Route path="sessions/:id" element={<SessionDetail />} />
-
-            <Route index element={<Navigate to="dashboard" replace />} />
-
+          <Route path="/app" element={<ProtectedRoute />}>
+            <Route element={<AppShell />}>
+              <Route path="dashboard"     element={<Dashboard />} />
+              <Route path="trips"         element={<Trips />} />
+              <Route path="trips/new"     element={<TripNew />} />
+              <Route path="trips/new/:id" element={<TripNew />} />
+              <Route path="saved"         element={<Saved />} />
+              <Route path="account"       element={<Account />} />
+              <Route path="sessions/:id"  element={<SessionDetail />} />
+              <Route index               element={<Navigate to="dashboard" replace />} />
+            </Route>
           </Route>
-        </Route>
 
-        {/* 404 */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="/admin" element={<ProtectedRoute />}>
+            <Route element={<AdminShell />}>
+              <Route index                element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard"     element={<AdminDashboard />} />
+              <Route path="users"         element={<AdminUsers />} />
+              <Route path="health"        element={<AdminHealth />} />
+              <Route path="config"        element={<AdminConfig />} />
+              <Route path="audit"         element={<AdminAuditLog />} />
+            </Route>
+          </Route>
+
+          <Route path="/share/:token" element={<SharedTrip />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
