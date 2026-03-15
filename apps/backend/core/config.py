@@ -5,9 +5,8 @@ Handles environment loading, LLM settings, paths, and logging setup.
 
 from pathlib import Path
 import os
-
+from dotenv import load_dotenv
 try:
-    from dotenv import load_dotenv
 
     # Force-load .env from backend/ directory
     env_path = Path(__file__).resolve().parents[3] / ".env"

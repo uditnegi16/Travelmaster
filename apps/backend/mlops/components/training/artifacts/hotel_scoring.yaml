@@ -21,4 +21,4 @@ filters:
 ranking:
   sort_by: score
   order: descending
-  top_k: 5
+  top_k: 2

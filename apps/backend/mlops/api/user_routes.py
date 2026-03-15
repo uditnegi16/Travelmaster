@@ -47,13 +47,18 @@ def _ensure_account_id(clerk_id: str) -> str:
     if account_id:
         return account_id
 
-    created = (
+    supabase.schema("user_db").table("user_profiles").insert({"clerk_user_id": clerk_id}).execute()
+    created_fetch = (
         supabase.schema("user_db")
         .table("user_profiles")
-        .insert({"clerk_user_id": clerk_id})
         .select("account_id")
+        .eq("clerk_user_id", clerk_id)
+        .limit(1)
         .execute()
     )
+    created = created_fetch
+    
+
     data = getattr(created, "data", None) or []
     if not data:
         raise HTTPException(status_code=500, detail="Failed to auto-create user profile")
@@ -109,11 +114,18 @@ def me(payload: Dict[str, Any] = Depends(current_user_payload)):
         return data[0]
 
     # Auto-create on first sign-in
+    email = payload.get("email") or None
+    insert_data = {"clerk_user_id": clerk_id}
+    if email:
+        insert_data["email"] = email
+
+    supabase.schema("user_db").table("user_profiles").insert(insert_data).execute()
     created = (
         supabase.schema("user_db")
         .table("user_profiles")
-        .insert({"clerk_user_id": clerk_id})
         .select("*")
+        .eq("clerk_user_id", clerk_id)
+        .limit(1)
         .execute()
     )
     created_data = getattr(created, "data", None) or []

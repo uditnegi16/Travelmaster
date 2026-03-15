@@ -283,7 +283,27 @@ function InlineResults({ ranked }: { ranked: RankedResults }) {
     </div>
   );
 }
-
+function NarrativeBlock({ content }: { content: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const isLong = content.length > 600;
+  const preview = isLong && !expanded ? content.slice(0, 600) + "…" : content;
+  return (
+    <div>
+      <div className="text-sm whitespace-pre-wrap" style={{ color: "var(--text-primary)", lineHeight: 1.7 }}>
+        {preview}
+      </div>
+      {isLong && (
+        <button
+          onClick={() => setExpanded(e => !e)}
+          className="mt-2 text-xs font-semibold px-3 py-1 rounded-full transition-colors"
+          style={{ background: "var(--teal)", color: "#000" }}
+        >
+          {expanded ? "▲ Show less" : "▼ Read full plan"}
+        </button>
+      )}
+    </div>
+  );
+}
 /* ─── Main ─── */
 export default function SessionDetail() {
   const { id } = useParams();
@@ -513,7 +533,7 @@ export default function SessionDetail() {
                     {m.role === "user" ? "You" : "TravelGuru AI"}
                   </div>
                   <div className={m.role === "user" ? "bubble-user" : "bubble-assistant"}>
-                    <div className="text-sm whitespace-pre-wrap" style={{ color: "var(--text-primary)" }}>{m.content}</div>
+                    <NarrativeBlock content={m.content} />
                     {m.ranked && <InlineResults ranked={m.ranked} />}
                   </div>
                 </div>

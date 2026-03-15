@@ -113,10 +113,6 @@ def score_and_rank_hotels(
 
         if city_required and not city:
             continue
-        if preferred_city and city and city != preferred_city:
-            # If preferred city is specified, filter strict to it (as your YAML implies city_required)
-            continue
-
         if min_rating is not None and rating is not None and rating < min_rating:
             continue
         if max_price is not None and price is not None and price > max_price:
