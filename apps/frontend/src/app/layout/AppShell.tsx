@@ -2,7 +2,7 @@
 // Light/Dark mode toggle with bulb icon in topbar
 
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import OnboardingTour from "../../components/Onboardingtour";
+import OnboardingTour from "../../components/OnboardingTour";
 import { useAuth, useUser, UserButton } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 
@@ -36,17 +36,6 @@ const IconPremium = () => (
 const IconShield = () => (
   <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-  </svg>
-);
-const IconLogout = () => (
-  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
-    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-    <polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
-  </svg>
-);
-const IconPlus = () => (
-  <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-    <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
   </svg>
 );
 const IconBell = () => (
@@ -85,7 +74,7 @@ const IconBulbOff = () => (
 // ── Theme tokens ──────────────────────────────────────────────────────────────
 export default function AppShell() {
   const navigate = useNavigate();
-  const { getToken, signOut } = useAuth();
+  const { getToken } = useAuth();
   const { user } = useUser();
   const [isAdmin, setIsAdmin] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);

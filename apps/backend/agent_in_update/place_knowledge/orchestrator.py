@@ -302,3 +302,5 @@ def get_place_knowledge(
     return orchestrator.get_place_knowledge(
         place_name, city, category, force_regenerate
     )
+
+

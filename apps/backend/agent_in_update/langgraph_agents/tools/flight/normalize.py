@@ -9,7 +9,7 @@ import re
 from typing import Any
 
 from core.logging import get_logger
-from agent_in_update.shared.schemas import FlightOption
+from shared.schemas import FlightOption
 
 logger = get_logger(__name__)
 import re
@@ -565,3 +565,4 @@ def flight_option_to_contract(
         "arrival_time": getattr(f, "arrival_time", ""),
         "booking_url": existing_url,
     }
+

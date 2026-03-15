@@ -10,8 +10,8 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage
 from langgraph.graph import StateGraph, END
 
-from agent_in_update.shared.mcp_client import get_mcp_client
-from agent_in_update.shared.schemas import BookingResponse
+from shared.mcp_client import get_mcp_client
+from shared.schemas import BookingResponse
 
 load_dotenv()
 
@@ -206,3 +206,5 @@ class BookingAgent:
 
     async def stream(self, query: str, context_id: str):
         yield self.invoke(query, context_id)
+
+

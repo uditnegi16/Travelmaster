@@ -39,13 +39,13 @@ Resources:
           SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3cmF1ZWRpY3Fvd25pbnp4ZXlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc4ODEwNjIsImV4cCI6MjA4MzQ1NzA2Mn0.Bo5SwT_p3Gx-vTrKVTv5mDs2C8XjaJYFXPxCSOh8Dt8
           DATABASE_URL: postgresql://postgres:[YOUR-PASSWORD]@db.zwrauedicqowninzxeyq.supabase.co:5432/postgres
           CLERK_JWKS_URL: https://adapting-snail-76.clerk.accounts.dev/.well-known/jwks.json
-          AGENT_URL: http://127.0.0.1:8001
+          AGENT_URL: https://napum590vf.execute-api.ap-south-1.amazonaws.com/prod
           AWS_REGION_NAME: ap-south-1
           SES_FROM_EMAIL: noreply@travelguru.app
           SES_ENABLED: "false"
           RAZORPAY_KEY_ID: ""
           RAZORPAY_KEY_SECRET: ""
-          FRONTEND_URL: REPLACE_AFTER_AMPLIFY
+          FRONTEND_URL: http://localhost:5173
 
 Outputs:
   ApiUrl:

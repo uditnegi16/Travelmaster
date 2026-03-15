@@ -19,11 +19,11 @@ Architecture Layer: Service
 """
 
 from core.logging import get_logger
-from agent_in_update.shared.schemas import PlaceOption
+from shared.schemas import PlaceOption
 from .adapters.google_api import search_places_google_api
 from .normalize import normalize_places
-from ....nlp.places_intent_extractor import extract_places_intent
-from ....postprocessing.places_enrichment import enrich_places, EnrichmentResult
+from nlp.places_intent_extractor import extract_places_intent
+from postprocessing.places_enrichment import enrich_places, EnrichmentResult
 
 logger = get_logger(__name__)
 
@@ -268,3 +268,5 @@ def search_places(
         )
         logger.error(error_msg, exc_info=True)
         raise PlacesSearchError(error_msg) from e
+
+

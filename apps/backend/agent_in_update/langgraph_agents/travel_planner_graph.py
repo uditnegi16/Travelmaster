@@ -12,7 +12,7 @@ import time
 from typing import Any, Dict, List, Optional
 from datetime import datetime, timedelta
 
-from agent_in_update.shared.schemas import (
+from shared.schemas import (
     TripRequest,
     TripResponse,
     FlightOption,
@@ -24,25 +24,25 @@ from agent_in_update.shared.schemas import (
     TripPlan,
     DayPlan
 )
-from agent_in_update.langgraph_agents.planner_agent import plan_trip as planner_plan_trip
-from agent_in_update.langgraph_agents.composer_agent import ComposerAgent
+from langgraph_agents.planner_agent import plan_trip as planner_plan_trip
+from langgraph_agents.composer_agent import ComposerAgent
 
 # Services (domain logic)
-from agent_in_update.langgraph_agents.local_tool_router import call_local_tool
+from langgraph_agents.local_tool_router import call_local_tool
 
 # Enrichers (postprocessing)
-from agent_in_update.postprocessing.flight_enrichment import enrich_flights
-from agent_in_update.postprocessing.hotel_enrichment import enrich_hotels
-from agent_in_update.postprocessing.places_enrichment import enrich_places
-from agent_in_update.postprocessing.weather_enrichment import enrich_weather_forecast
-from agent_in_update.postprocessing.budget_enrichment import enrich_budget
-from agent_in_update.postprocessing.itinerary_enrichment import enrich_itinerary
+from postprocessing.flight_enrichment import enrich_flights
+from postprocessing.hotel_enrichment import enrich_hotels
+from postprocessing.places_enrichment import enrich_places
+from postprocessing.weather_enrichment import enrich_weather_forecast
+from postprocessing.budget_enrichment import enrich_budget
+from postprocessing.itinerary_enrichment import enrich_itinerary
 
 
-from agent_in_update.postprocessing.flight_enrichment import FlightEnrichmentResult
-from agent_in_update.postprocessing.hotel_enrichment import EnrichmentResult as HotelEnrichmentResult
-from agent_in_update.postprocessing.places_enrichment import EnrichmentResult as PlacesEnrichmentResult
-from agent_in_update.postprocessing.weather_enrichment import TripWeatherAnalysis
+from postprocessing.flight_enrichment import FlightEnrichmentResult
+from postprocessing.hotel_enrichment import EnrichmentResult as HotelEnrichmentResult
+from postprocessing.places_enrichment import EnrichmentResult as PlacesEnrichmentResult
+from postprocessing.weather_enrichment import TripWeatherAnalysis
 
 logger = logging.getLogger(__name__)
 
@@ -1052,7 +1052,7 @@ _orchestrator = TravelPlannerOrchestrator()
 # app/agents/langgraph_agents/travel_planner_graph.py  (or wherever generate_trip_plan is)
 
 from typing import Optional, Dict, Any, Union
-from agent_in_update.shared.schemas import TripRequest
+from shared.schemas import TripRequest
 
 def generate_trip_plan(
     user_query: Optional[str] = None,
@@ -1096,3 +1096,5 @@ def run_travel_planner(user_query: str) -> str:
         RuntimeError: If planning fails
     """
     return generate_trip_plan(user_query)["narrative"]
+
+

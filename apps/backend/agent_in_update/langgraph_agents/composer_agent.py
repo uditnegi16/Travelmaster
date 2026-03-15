@@ -13,7 +13,7 @@ from pathlib import Path
 
 from openai import OpenAI
 
-from agent_in_update.shared.schemas import TripResponse
+from shared.schemas import TripResponse
 from core.config import COMPOSER_MODEL, OPENAI_API_KEY
 
 logger = logging.getLogger(__name__)
@@ -589,3 +589,4 @@ def compose_mlops(self, *, places: list[dict], weather: list[dict], budget: dict
     # Use your existing internal LLM caller (streaming or non-streaming)
     text = self._call_llm(messages, context="mlops_narrative")
     return text.strip()
+

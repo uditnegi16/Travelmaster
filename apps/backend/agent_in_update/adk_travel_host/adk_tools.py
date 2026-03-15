@@ -119,3 +119,5 @@ def finalize_masterplan(plan_id: str) -> Dict[str, Any]:
 
 def get_masterplan(plan_id: str) -> Dict[str, Any]:
     return MASTERPLANS.get(plan_id, {"status": "not_found"})
+
+

@@ -56,3 +56,5 @@ WEATHER_DATASET_PATH: str = os.getenv(
 USE_AMADEUS_API: bool = os.getenv("USE_AMADEUS_API", "true").lower() in {"1", "true", "yes"}
 USE_GOOGLE_PLACES: bool = os.getenv("USE_GOOGLE_PLACES", "true").lower() in {"1", "true", "yes"}
 USE_OPENWEATHER: bool = os.getenv("USE_OPENWEATHER", "true").lower() in {"1", "true", "yes"}
+
+

@@ -597,3 +597,5 @@ class HotelIntentExtractor:
             location_preference=prefs.get("location_preference"),
             traveler_type=prefs.get("traveler_type")
         )
+
+

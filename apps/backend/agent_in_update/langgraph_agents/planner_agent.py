@@ -11,7 +11,7 @@ from pathlib import Path
 
 from openai import OpenAI
 
-from agent_in_update.shared.schemas import PlannerOutput, ToolCallPlan
+from shared.schemas import PlannerOutput, ToolCallPlan
 from core.config import PLANNER_MODEL, OPENAI_API_KEY, OPENAI_BASE_URL
 
 logger = logging.getLogger(__name__)
@@ -423,3 +423,5 @@ def _clean_planner_payload(data: dict) -> dict:
         cleaned.pop(field, None)
     
     return cleaned
+
+

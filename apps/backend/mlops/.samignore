@@ -1,0 +1,9 @@
+mlruns/
+notebook/
+artifacts/
+.env
+__pycache__/
+*.pyc
+*.ipynb
+hotel_drift_report.html
+test_evidently.py

@@ -166,3 +166,5 @@ def get_mcp_client() -> MCPClient:
     if not _default_client:
         _default_client = MCPClient()
     return _default_client
+
+

@@ -175,3 +175,4 @@ def search_flights_api(
 
     except Exception as e:
         raise FlightAPIError(f"Amadeus Flight API call failed: {str(e)}") from e
+

@@ -95,3 +95,5 @@ def search_raw_hotels(
         ]
     
     return results
+
+

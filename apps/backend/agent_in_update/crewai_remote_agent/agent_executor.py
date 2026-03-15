@@ -12,7 +12,7 @@ from a2a.types import (
 )
 from a2a.utils.errors import ServerError
 
-from agent_in_update.crewai_remote_agent.explorer_agent import run_explorer_agent
+from crewai_remote_agent.explorer_agent import run_explorer_agent
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -53,3 +53,5 @@ class ExplorerAgentExecutor(AgentExecutor):
 
     async def cancel(self, context: RequestContext, event_queue: EventQueue) -> None:
         raise ServerError(error=UnsupportedOperationError())
+
+

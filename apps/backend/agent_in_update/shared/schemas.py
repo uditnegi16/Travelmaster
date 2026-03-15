@@ -459,3 +459,5 @@ class TripResponse(BaseModel):
     itinerary_enrichment: Optional[Any] = Field(None, description="Itinerary intelligence & scheduling")
     
     model_config = {"extra": "forbid"}
+
+

@@ -330,3 +330,5 @@ def save_to_cache(knowledge: PlaceKnowledge) -> bool:
     """Quick function to save knowledge to global cache"""
     cache = get_global_cache()
     return cache.save(knowledge)
+
+

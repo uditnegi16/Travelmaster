@@ -34,3 +34,4 @@ def get_openai_client(client: Optional[OpenAI] = None) -> Optional[OpenAI]:
     except Exception as e:
         logger.error(f"Failed to auto-initialize OpenAI client: {e}")
         return None
+

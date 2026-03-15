@@ -13,12 +13,12 @@ from core.config import DEFAULT_CURRENCY
 from core.logging import get_logger
 from core.amadeus_iata import resolve_city_to_iata, UnknownCityError
 
-from agent_in_update.shared.schemas import FlightOption
+from shared.schemas import FlightOption
 from .adapters.api import search_flights_api
 from .normalize import normalize_flight_offers
 
 # Keep import, but we will gate it behind a flag to avoid current EnrichedFlight crash
-from ....postprocessing.flight_enrichment import FlightIntelligenceEngine  # noqa: F401
+from postprocessing.flight_enrichment import FlightIntelligenceEngine  # noqa: F401
 
 
 logger = get_logger(__name__)
@@ -106,3 +106,4 @@ def search_flights(
     except Exception as e:
         logger.exception("Flight search failed: %s", e)
         return []
+

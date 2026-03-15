@@ -1,4 +1,4 @@
-from agent_in_update.shared.mcp_client import get_mcp_client
+from shared.mcp_client import get_mcp_client
 
 def main():
     mcp = get_mcp_client()
@@ -29,3 +29,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

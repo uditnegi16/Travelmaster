@@ -161,3 +161,5 @@ def book_hotel_api(
             logger.error(error_msg, exc_info=True)
         
         raise HotelBookingAPIError(error_msg) from e
+
+

@@ -4,7 +4,7 @@ NLP Module - Natural Language Understanding for TravelGuru
 Provides intent extraction and query parsing capabilities for natural language queries.
 """
 
-from agent_in_update.nlp.flight_intent_extractor import (
+from nlp.flight_intent_extractor import (
     FlightIntentExtractor,
     FlightIntent,
     ExtractedPreferences,
@@ -17,3 +17,5 @@ __all__ = [
     "ExtractedPreferences",
     "extract_flight_intent",
 ]
+
+

@@ -21,7 +21,7 @@ Architecture Layer: Normalizer
 from typing import Any
 
 from core.logging import get_logger
-from agent_in_update.shared.schemas import HotelOption
+from shared.schemas import HotelOption
 
 logger = get_logger(__name__)
 
@@ -456,3 +456,4 @@ def hotel_option_to_contract(h: HotelOption) -> dict:
         "check_out": check_out,
         "booking_url": existing_url,
     }
+

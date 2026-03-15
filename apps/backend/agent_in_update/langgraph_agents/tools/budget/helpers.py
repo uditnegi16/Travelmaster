@@ -85,3 +85,5 @@ def compute_activities_cost(places: list[PlaceOption] | None) -> int:
     
     logger.debug(f"Activities cost: {total} (from {len(places)} places)")
     return total
+
+

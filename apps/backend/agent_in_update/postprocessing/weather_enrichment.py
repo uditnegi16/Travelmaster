@@ -22,7 +22,7 @@ import statistics
 
 from pydantic import BaseModel, Field
 
-from agent_in_update.shared.schemas import WeatherSummary
+from shared.schemas import WeatherSummary
 from shared.constants import (
     # Insight types
     INSIGHT_TYPE_ADVANTAGE,
@@ -1753,3 +1753,5 @@ if __name__ == "__main__":
     print(f"{'-' * 80}")
     for item in analysis.packing_checklist[:15]:
         print(f"  {item}")
+
+

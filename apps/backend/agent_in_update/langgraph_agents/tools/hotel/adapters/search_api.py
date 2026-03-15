@@ -280,3 +280,4 @@ def search_hotels_api(
         # Return empty list instead of crashing — hotel results are optional.
         # The pipeline still returns flights, places, weather and budget.
         return []
+

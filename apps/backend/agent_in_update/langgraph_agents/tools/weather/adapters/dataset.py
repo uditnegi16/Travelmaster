@@ -72,3 +72,5 @@ def get_raw_weather(city: str, month: int) -> dict | None:
     
     logger.info(f"No weather data found for {city}, month {month}")
     return None
+
+

@@ -155,3 +155,5 @@ def get_hotel_ratings_api(
         )
         logger.error(error_msg, exc_info=True)
         raise HotelRatingsAPIError(error_msg) from e
+
+

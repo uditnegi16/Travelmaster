@@ -3,10 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.stripe_routes import router as stripe_router
-
-from api.schemas import HotelRequest, FlightRequest, CabRequest
-from pipelines.pipelines import recommend_hotels, recommend_flights, recommend_cabs
-from utils.db_utils import load_hotels_from_db, load_flights_from_db, load_cabs_from_db
+# ML pipelines disabled in Lambda deployment
 from api.plan_trip import router as plan_trip_router
 from api.user_routes import router as user_router
 from api.session_routes import router as session_router
@@ -87,33 +84,4 @@ def health_full():
     overall = "healthy" if all(r["status"] == "healthy" for r in results) else "degraded"
     return {"overall": overall, "services": results}
 
-
-# ── Legacy ML endpoints ───────────────────────────────────────────
-@app.post("/recommend/hotels")
-def recommend_hotels_api(request: HotelRequest):
-    hotels_df = load_hotels_from_db()
-    agent_output = {
-        "hotel_preferences": {
-            "preferred_city": request.city,
-            "preferred_star_category": request.preferred_star_category,
-        }
-    }
-    ranked = recommend_hotels(hotels_df=hotels_df, agent_output=agent_output, top_k=request.top_k)
-    return {"recommended": ranked.to_dict(orient="records"), "count": len(ranked)}
-
-
-@app.post("/recommend/flights")
-def recommend_flights_api(request: FlightRequest):
-    flights_df = load_flights_from_db()
-    agent_output = {"origin": request.origin, "destination": request.destination}
-    ranked = recommend_flights(flights_df=flights_df, agent_output=agent_output, top_k=request.top_k)
-    return {"recommended": ranked.to_dict(orient="records"), "count": len(ranked)}
-
-
-@app.post("/recommend/cabs")
-def recommend_cabs_api(request: CabRequest):
-    cabs_df = load_cabs_from_db()
-    agent_output = {"pickup_location": request.pickup_location, "drop_location": request.drop_location}
-    ranked = recommend_cabs(cabs_df=cabs_df, agent_output=agent_output, top_k=request.top_k)
-    return {"recommended": ranked.to_dict(orient="records"), "count": len(ranked)}
 

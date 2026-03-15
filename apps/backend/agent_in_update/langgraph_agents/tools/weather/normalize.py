@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import Any
 
 from core.logging import get_logger
-from agent_in_update.shared.schemas import WeatherSummary
+from shared.schemas import WeatherSummary
 
 logger = get_logger(__name__)
 
@@ -201,4 +201,6 @@ def normalize_weather_forecast(
     logger.info(f"Normalized {len(summaries)} daily weather summaries")
     
     return summaries
+
+
 

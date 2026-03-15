@@ -4,13 +4,13 @@ Orchestrates weather forecast retrieval using OpenWeather API.
 """
 
 from core.logging import get_logger
-from agent_in_update.shared.schemas import WeatherSummary
+from shared.schemas import WeatherSummary
 from .adapters.openweather_api import (
     fetch_weather_forecast_api,
     WeatherAPIError,
 )
 from .normalize import normalize_weather_forecast
-from ....postprocessing.weather_enrichment import enrich_weather_forecast
+from postprocessing.weather_enrichment import enrich_weather_forecast
 
 logger = get_logger(__name__)
 
@@ -113,3 +113,5 @@ def get_weather_forecast(
     
     logger.info(f"Returning {len(enriched_summaries)} weather forecast summaries for '{city}'")
     return enriched_summaries
+
+

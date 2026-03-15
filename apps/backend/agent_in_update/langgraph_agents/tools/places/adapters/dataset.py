@@ -85,3 +85,5 @@ def search_raw_places(
     
     logger.info(f"Found {len(results)} places for city={city}, category={category}, max_entry_fee={max_entry_fee}")
     return results
+
+

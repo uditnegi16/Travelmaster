@@ -21,7 +21,7 @@ Design Principle:
 ❗ 100% deterministic planning
 ❗ Only heuristics & rules
 """
-from agent_in_update.shared.schemas import WeatherInfo
+from shared.schemas import WeatherInfo
 
 from typing import List, Dict, Any, Optional, Tuple
 from datetime import datetime, timedelta
@@ -1637,3 +1637,5 @@ def convert_to_trip_plan(enriched_itinerary: EnrichedItinerary,
         weather=weather_info,
         notes=notes
     )
+
+

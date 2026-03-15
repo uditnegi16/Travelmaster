@@ -9,11 +9,11 @@ in the future. The interface is designed to be swappable.
 from typing import Any, Callable
 
 from core.logging import get_logger
-from agent_in_update.langgraph_agents.tools.flight.service import search_flights
-from agent_in_update.langgraph_agents.tools.hotel.service import search_hotels
-from agent_in_update.langgraph_agents.tools.places.service import search_places
-from agent_in_update.langgraph_agents.tools.weather.service import get_weather_forecast
-from agent_in_update.langgraph_agents.tools.budget.service import compute_budget
+from langgraph_agents.tools.flight.service import search_flights
+from langgraph_agents.tools.hotel.service import search_hotels
+from langgraph_agents.tools.places.service import search_places
+from langgraph_agents.tools.weather.service import get_weather_forecast
+from langgraph_agents.tools.budget.service import compute_budget
 
 logger = get_logger(__name__)
 
@@ -144,3 +144,5 @@ def get_available_tools() -> list[str]:
         True
     """
     return list(TOOL_REGISTRY.keys())
+
+

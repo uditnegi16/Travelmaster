@@ -10,8 +10,8 @@ from langchain_core.messages import HumanMessage, AIMessage
 from google.adk.agents import Agent
 from google.adk.tools import tool
 
-from agent_in_update.shared.mcp_client import get_mcp_client
-from agent_in_update.shared.schemas import BudgetResponse
+from shared.mcp_client import get_mcp_client
+from shared.schemas import BudgetResponse
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -96,3 +96,5 @@ You are a travel budget optimization expert.
 Always call budget_estimator tool with full JSON input.
 """,
     )
+
+

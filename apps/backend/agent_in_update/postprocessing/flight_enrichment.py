@@ -20,7 +20,7 @@ import statistics
 
 from pydantic import BaseModel, Field
 
-from agent_in_update.shared.schemas import FlightOption
+from shared.schemas import FlightOption
 from shared.constants import (
     # Insight types
     INSIGHT_TYPE_ADVANTAGE,
@@ -1204,3 +1204,5 @@ if __name__ == "__main__":
     print(f"\nTravel Tips:")
     for tip in result.travel_tips[:5]:  # Top 5 tips
         print(f"  • {tip}")
+
+

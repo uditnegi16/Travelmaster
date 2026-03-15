@@ -312,3 +312,5 @@ def is_wikipedia_good_enough(page: Optional[WikipediaPage]) -> bool:
     """
     checker = WikipediaQualityChecker()
     return checker.is_good_enough(page)
+
+

@@ -12,7 +12,7 @@ from a2a.types import (
 )
 from a2a.utils.errors import ServerError
 
-from agent_in_update.langgraph_remote_agent.booking_agent import BookingAgent
+from langgraph_remote_agent.booking_agent import BookingAgent
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -58,3 +58,5 @@ class BookingAgentExecutor(AgentExecutor):
 
     async def cancel(self, context: RequestContext, event_queue: EventQueue) -> None:
         raise ServerError(error=UnsupportedOperationError())
+
+

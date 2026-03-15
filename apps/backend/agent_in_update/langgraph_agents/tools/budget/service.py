@@ -10,7 +10,7 @@ from shared.schemas import (
     PlaceOption,
     BudgetSummary
 )
-from ....postprocessing.budget_enrichment import enrich_budget
+from postprocessing.budget_enrichment import enrich_budget
 from .helpers import (
     compute_flights_cost,
     compute_hotel_cost,
@@ -117,3 +117,5 @@ def compute_budget(
             logger.warning(f"Budget enrichment failed: {e}. Returning basic budget summary.")
     
     return budget_summary
+
+

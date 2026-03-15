@@ -322,3 +322,5 @@ def generate_knowledge_from_scratch(
     """
     enricher = GPTPlaceEnricher(client)
     return enricher.generate_from_scratch(place_name, city, category)
+
+

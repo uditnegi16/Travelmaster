@@ -19,12 +19,12 @@ Architecture Layer: Service
 
 from core.amadeus_iata import UnknownCityError, resolve_city_to_iata
 from core.logging import get_logger
-from agent_in_update.shared.schemas import HotelOption
+from shared.schemas import HotelOption
 from .adapters.ratings_api import get_hotel_ratings_api
 from .adapters.search_api import search_hotels_api
 from .normalize import normalize_hotels
-from ....nlp.hotel_intent_extractor import extract_hotel_intent
-from ....postprocessing.hotel_enrichment import enrich_hotels, EnrichmentResult
+from nlp.hotel_intent_extractor import extract_hotel_intent
+from postprocessing.hotel_enrichment import enrich_hotels, EnrichmentResult
 
 logger = get_logger(__name__)
 
@@ -501,7 +501,7 @@ def search_hotels_enriched(
                 hotels = hotels[:limit]
             
             # Create minimal enrichment result
-            from ....postprocessing.hotel_enrichment import EnrichedHotel
+            from postprocessing.hotel_enrichment import EnrichedHotel
             enriched_hotels = [
                 EnrichedHotel(
                     hotel=h,
@@ -538,3 +538,5 @@ def search_hotels_enriched(
         )
         logger.error(error_msg, exc_info=True)
         return []
+
+

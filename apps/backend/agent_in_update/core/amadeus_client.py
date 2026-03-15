@@ -133,3 +133,5 @@ def call_amadeus(
                 logger.error("Amadeus call failed after %d attempts: %s", max_retries, e)
 
     raise AmadeusAPIError(f"Amadeus call failed after {max_retries} attempts: {last_exc}") from last_exc
+
+

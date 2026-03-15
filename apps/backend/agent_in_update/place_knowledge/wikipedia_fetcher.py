@@ -299,3 +299,5 @@ def fetch_place_wikipedia(place_name: str, city: str, category: Optional[str] = 
     """
     fetcher = WikipediaFetcher()
     return fetcher.fetch(place_name, city, category)
+
+

@@ -25,7 +25,7 @@ import logging
 from pydantic import BaseModel, Field
 from openai import OpenAI
 
-from agent_in_update.shared.schemas import PlaceOption
+from shared.schemas import PlaceOption
 from shared.constants import (
     INSIGHT_TYPE_ADVANTAGE,
     INSIGHT_TYPE_CONSIDERATION,
@@ -43,7 +43,7 @@ from shared.constants import (
     MATCH_SCORE_MAX,
 )
 
-from ..place_knowledge.client_factory import get_openai_client
+from place_knowledge.client_factory import get_openai_client
 
 # ============================================================================
 # COMPREHENSIVE ENRICHMENT SCHEMAS
@@ -437,7 +437,7 @@ class PlacesIntelligenceEngine:
         # Use knowledge-enhanced contextual info if enabled
         if self.use_knowledge_system and self.openai_client:
             try:
-                from agent_in_update.place_knowledge.integration import (
+                from place_knowledge.integration import (
                     create_knowledge_enhanced_contextual_info
                 )
                 contextual = create_knowledge_enhanced_contextual_info(
@@ -1186,3 +1186,5 @@ def enrich_places(
         use_knowledge_system=use_knowledge_system
     )
     return engine.enrich_places(places, preferences)
+
+

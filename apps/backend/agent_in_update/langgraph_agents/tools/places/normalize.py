@@ -19,7 +19,7 @@ Architecture Layer: Normalizer
 - ONLY data shape transformation and light filtering
 """
 
-from agent_in_update.shared.schemas import PlaceOption
+from shared.schemas import PlaceOption
 
 # Google price level to approximate INR mapping
 PRICE_MAP = {
@@ -261,6 +261,8 @@ def _extract_price(raw_place: dict) -> int:
     
     # Map to INR using price map
     return PRICE_MAP.get(price_level, 0)
+
+
 
 
 

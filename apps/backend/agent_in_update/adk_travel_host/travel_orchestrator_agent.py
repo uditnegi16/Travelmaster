@@ -286,3 +286,5 @@ def _get_initialized_host_agent_sync():
 
 
 root_agent = _get_initialized_host_agent_sync()
+
+

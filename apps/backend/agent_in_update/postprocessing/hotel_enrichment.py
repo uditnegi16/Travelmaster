@@ -20,7 +20,7 @@ import statistics
 
 from pydantic import BaseModel, Field
 
-from agent_in_update.shared.schemas import HotelOption
+from shared.schemas import HotelOption
 from shared.constants import (
     # Insight types
     INSIGHT_TYPE_ADVANTAGE,
@@ -710,3 +710,5 @@ def enrich_hotels(
     """
     engine = HotelIntelligenceEngine()
     return engine.enrich_hotels(hotels, preferences)
+
+

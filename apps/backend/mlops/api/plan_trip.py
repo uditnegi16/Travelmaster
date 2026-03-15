@@ -8,7 +8,7 @@ from adapters.agent_adapter import AgentAdapter
 
 router = APIRouter()
 
-AGENT_URL = os.getenv("LANGGRAPH_AGENT_URL", "http://localhost:8001")
+AGENT_URL = os.getenv("AGENT_URL", "http://127.0.0.1:8001")
 agent_adapter = AgentAdapter(agent_url=AGENT_URL, timeout_sec=900)  # 15 min
 
 

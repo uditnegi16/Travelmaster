@@ -237,3 +237,5 @@ def search_places_google_api(
         )
         logger.error(error_msg, exc_info=True)
         raise PlacesGoogleAPIError(error_msg) from e
+
+

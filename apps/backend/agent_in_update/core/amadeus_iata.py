@@ -198,3 +198,5 @@ def _resolve_via_amadeus(city: str) -> Optional[str]:
     except Exception:
         pass
     return None
+
+

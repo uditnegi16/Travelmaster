@@ -12,7 +12,7 @@ from a2a.server.tasks import InMemoryTaskStore
 from a2a.types import AgentCapabilities, AgentCard, AgentSkill
 from dotenv import load_dotenv
 
-from agent_in_update.crewai_remote_agent.agent_executor import ExplorerAgentExecutor
+from crewai_remote_agent.agent_executor import ExplorerAgentExecutor
 
 load_dotenv()
 
@@ -111,3 +111,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

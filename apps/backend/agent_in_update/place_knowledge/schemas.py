@@ -197,3 +197,5 @@ class KnowledgeQualityMetrics(BaseModel):
     overall_quality: Literal["excellent", "good", "fair", "poor"]
     
     model_config = {"extra": "forbid"}
+
+

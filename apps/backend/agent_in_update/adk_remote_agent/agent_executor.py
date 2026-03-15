@@ -153,3 +153,5 @@ def convert_genai_part_to_a2a(part: types.Part) -> Part:
             )
         )
     raise ValueError("Unsupported GenAI part")
+
+

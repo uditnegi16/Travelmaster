@@ -49,3 +49,5 @@ async def send_message_and_poll(text: str, context_id: str = "explore_test_1"):
 
 if __name__ == "__main__":
     asyncio.run(send_message_and_poll("Find top attractions in Goa for 3 days family trip"))
+
+

@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 
-from agent_in_update.shared.schemas import TripRequest
+from shared.schemas import TripRequest
 from .travel_planner_graph import generate_trip_plan
 
 
@@ -74,3 +74,5 @@ def plan_trip(request: AgentRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
