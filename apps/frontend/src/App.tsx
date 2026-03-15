@@ -20,6 +20,8 @@ import AdminHealth from "./app/routes/admin/AdminHealth";
 import AdminConfig from "./app/routes/admin/AdminConfig";
 import AdminAuditLog from "./app/routes/admin/AdminAuditLog";
 import SharedTrip from "./app/routes/Shared_Trip";
+import Premium from "./app/routes/Premium";
+
 function WelcomeRedirect() {
   const { isSignedIn, isLoaded, getToken } = useAuth();
   const [redirect, setRedirect] = useState<string | null>(null);
@@ -60,6 +62,7 @@ export default function App() {
               <Route path="trips/new/:id" element={<TripNew />} />
               <Route path="saved"         element={<Saved />} />
               <Route path="account"       element={<Account />} />
+              <Route path="premium"       element={<Premium />} />
               <Route path="sessions/:id"  element={<SessionDetail />} />
               <Route index               element={<Navigate to="dashboard" replace />} />
             </Route>

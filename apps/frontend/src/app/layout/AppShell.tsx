@@ -34,12 +34,17 @@ const IconShield = () => (
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
   </svg>
 );
-
+const IconCrown = () => (
+  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+    <path d="M2 20h20M4 20L2 8l6 4 4-8 4 8 6-4-2 12" />
+  </svg>
+);
 const NAV = [
   { to: "/app/trips",     label: "Trips",       Icon: IconCompass },
   { to: "/app/dashboard", label: "Dashboard",   Icon: IconGrid },
   { to: "/app/saved",     label: "Saved Trips", Icon: IconBookmark },
   { to: "/app/account",   label: "Account",     Icon: IconUser },
+  { to: "/app/premium",   label: "Premium",     Icon: IconCrown },
 ];
 
 export default function AppShell() {

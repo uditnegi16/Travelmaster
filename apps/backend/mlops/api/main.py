@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from api.stripe_routes import router as stripe_router
 
 from api.schemas import HotelRequest, FlightRequest, CabRequest
 from pipelines.pipelines import recommend_hotels, recommend_flights, recommend_cabs
@@ -44,6 +45,7 @@ app.include_router(session_router)
 app.include_router(admin_router)
 app.include_router(share_router)
 app.include_router(pdf_router)
+app.include_router(stripe_router)
 
 # ── Health ────────────────────────────────────────────────────────
 @app.get("/")

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth, UserButton } from "@clerk/clerk-react";
 import { apiGet } from "../../lib/api";
+import { useNavigate } from "react-router-dom";
 
 type UserProfile = {
   account_id: string;
@@ -12,6 +13,8 @@ type UserProfile = {
   age?: number | null;
   gender?: string | null;
   created_at?: string;
+  tier?: string | null;
+  searches_this_month?: number | null;
 };
 
 function FieldRow({ label, value }: { label: string; value: React.ReactNode }) {
@@ -28,7 +31,7 @@ export default function Account() {
   const [me, setMe] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
-
+  const navigate = useNavigate();
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -72,13 +75,24 @@ export default function Account() {
               <>
                 <div className="font-display font-bold text-lg" style={{ color: "var(--text-primary)" }}>{me?.name || "—"}</div>
                 <div className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>{me?.email || "—"}</div>
-                {me?.created_at && (
-                  <div className="mt-2">
+                
+                
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {me?.created_at && (
                     <span className="badge badge-teal text-[10px]">
                       Member since {new Date(me.created_at).toLocaleDateString("en-IN", { month: "short", year: "numeric" })}
                     </span>
-                  </div>
-                )}
+                  )}
+                  <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold"
+                    style={{
+                      background: me?.tier === "premium" ? "rgba(245,158,11,0.15)" : "rgba(100,100,100,0.15)",
+                      color: me?.tier === "premium" ? "#f59e0b" : "var(--text-muted)"
+                    }}>
+                    {me?.tier === "premium" ? "✦ Premium" : "Free Plan"}
+                  </span>
+                </div>
+
+
               </>
             )}
           </div>
@@ -114,6 +128,34 @@ export default function Account() {
           </div>
         )}
       </div>
+
+      {/* Plan card */}
+      {!loading && me?.tier !== "premium" && (
+        <div className="card p-5 fade-up-3"
+          style={{ border: "1px solid rgba(245,158,11,0.25)", background: "rgba(245,158,11,0.03)" }}>
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+                You're on the Free plan
+              </p>
+              <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
+                {me?.searches_this_month ?? 0} of 5 searches used this month
+              </p>
+            </div>
+            <button
+              onClick={() => navigate("/app/premium")}
+              className="btn text-xs py-2 px-4 font-bold"
+              style={{
+                background: "linear-gradient(135deg, #f59e0b, #ef4444)",
+                color: "#000",
+                border: "none"
+              }}
+            >
+              ✦ Upgrade to Premium
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
