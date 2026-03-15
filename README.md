@@ -110,11 +110,15 @@ Copy-Item ".env" "D:\Travelmaster\apps\backend\.env" -Force
 Copy-Item ".env" "D:\Travelmaster\.env" -Force
 ```
 
-Install dependencies and run:
-
+Create and activate virtual environment, install dependencies and run:
 ```powershell
-cd D:\Travelmaster\apps\backend
-pip install -r requirements_new.txt
+cd D:\Travelmaster
+uv venv
+.venv\Scripts\activate
+
+cd apps\backend
+uv pip install -r requirements_new.txt
+
 $env:PYTHONPATH="D:\Travelmaster\apps\backend"
 uvicorn agent_in_update.langgraph_agents.api:app --reload --port 8001
 ```
