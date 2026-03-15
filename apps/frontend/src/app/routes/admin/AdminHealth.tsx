@@ -18,7 +18,7 @@ export default function AdminHealth() {
 
   const fetchHealth = async () => {
     const token = await getToken();
-    const res = await fetch("http://127.0.0.1:8000/admin/health", {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/admin/health`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (res.ok) setLogs(await res.json());
@@ -29,7 +29,7 @@ export default function AdminHealth() {
   const triggerFullCheck = async () => {
     setRefreshing(true);
     const token = await getToken();
-    await fetch("http://127.0.0.1:8000/health/full", {
+    await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/health/full`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     await fetchHealth();

@@ -1,8 +1,9 @@
 {
-    "python.analysis.extraPaths": [
-        "${workspaceFolder}/travelguru-v5/backend"
-    ],
-    "python.autoComplete.extraPaths": [
-        "${workspaceFolder}/travelguru-v5/backend"
-    ]
+  "css.validate": false,
+  "scss.validate": false,
+  "less.validate": false,
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  }
 }

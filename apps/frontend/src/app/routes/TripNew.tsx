@@ -440,7 +440,7 @@ export default function TripNew() {
                   setPdfLoading(true);
                   try {
                     const token = await getToken();
-                    const res = await fetch(`http://127.0.0.1:8000/me/sessions/${sessionId}/pdf`, {
+                    const res = await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/me/sessions/${sessionId}/pdf`, {
                       headers: { Authorization: `Bearer ${token}` },
                     });
                     if (!res.ok) {
@@ -468,7 +468,7 @@ export default function TripNew() {
                   setShareLoading(true);
                   try {
                     const token = await getToken();
-                    const res = await fetch(`http://127.0.0.1:8000/me/sessions/${sessionId}/share`, {
+                    const res = await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/me/sessions/${sessionId}/share`, {
                       method: "POST",
                       headers: { Authorization: `Bearer ${token}` },
                     });
@@ -500,7 +500,7 @@ export default function TripNew() {
       {err && <div className="card p-3" style={{ borderLeft: "3px solid var(--coral)", color: "var(--coral)", fontSize: 14 }}>{err}</div>}
 
       {/* Full width chat — no right panel anymore */}
-      <div className="card overflow-hidden flex flex-col fade-up-1" style={{ height: 800 }}>
+      <div className="card overflow-hidden flex flex-col fade-up-1" style={{ height: "calc(100vh - 310px)", minHeight: 420, maxHeight: 720 }}>
         {/* Chat header */}
         <div className="flex items-center justify-between px-5 py-3 border-b" style={{ borderColor: "var(--border)" }}>
           <div className="flex items-center gap-2">
@@ -529,7 +529,7 @@ export default function TripNew() {
                 <div className="space-y-2">
                   {EXAMPLES.map(ex => (
                     <button key={ex}
-                      className="w-full text-left card-elevated p-3 rounded-xl text-sm hover:border-teal-500 transition-colors"
+                      className="w-full text-left card-elevated p-3 rounded-xl text-sm hover:border-teal-500 transition-colors cursor-pointer"
                       style={{ color: "var(--text-secondary)" }}
                       onClick={() => send(ex)}>
                       "{ex}"

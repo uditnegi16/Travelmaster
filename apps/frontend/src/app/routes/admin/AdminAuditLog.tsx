@@ -29,7 +29,7 @@ export default function AdminAuditLog() {
   useEffect(() => {
     (async () => {
       const token = await getToken();
-      const res = await fetch("http://127.0.0.1:8000/admin/audit-log", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/admin/audit-log`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) setLogs(await res.json());

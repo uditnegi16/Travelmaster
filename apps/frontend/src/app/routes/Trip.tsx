@@ -84,7 +84,7 @@ export default function Trips() {
     const token = await getToken();
     await Promise.all(
       Array.from(selected).map(id =>
-        fetch(`http://127.0.0.1:8000/me/sessions/${id}`, {
+        fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/me/sessions/${id}`, {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
         })

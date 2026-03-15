@@ -20,7 +20,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     (async () => {
       const token = await getToken();
-      const res = await fetch("http://127.0.0.1:8000/admin/analytics", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/admin/analytics`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) setData(await res.json());

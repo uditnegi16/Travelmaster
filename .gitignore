@@ -206,3 +206,26 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+
+# Frontend build output
+node_modules/
+apps/frontend/dist/
+apps/frontend/.env.local
+
+# MLflow experiment tracking
+mlruns/
+
+# Archive venv (should never be committed)
+_archive/langgraph_agents_venv/
+
+# Python cache (all subdirs)
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+
+# SQLite cache files
+*.db
+
+# Local env overrides
+.env.local
+.env.production

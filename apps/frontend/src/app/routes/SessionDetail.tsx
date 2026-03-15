@@ -444,7 +444,7 @@ export default function SessionDetail() {
               setPdfLoading(true);
               try {
                 const token = await getToken();
-                const res = await fetch(`http://127.0.0.1:8000/me/sessions/${sessionId}/pdf`, {
+                const res = await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/me/sessions/${sessionId}/pdf`, {
                   headers: { Authorization: `Bearer ${token}` },
                 });
                 if (!res.ok) {
@@ -472,7 +472,7 @@ export default function SessionDetail() {
               setShareLoading(true);
               try {
                 const token = await getToken();
-                const res = await fetch(`http://127.0.0.1:8000/me/sessions/${sessionId}/share`, {
+                const res = await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/me/sessions/${sessionId}/share`, {
                   method: "POST",
                   headers: { Authorization: `Bearer ${token}` },
                 });
@@ -505,7 +505,7 @@ export default function SessionDetail() {
       {err && <div className="card p-3" style={{ borderLeft: "3px solid var(--coral)", color: "var(--coral)", fontSize: 13 }}>{err}</div>}
 
       {/* Chat window — same style as TripNew */}
-      <div className="card overflow-hidden flex flex-col fade-up-1" style={{ height: 600 }}>
+      <div className="card overflow-hidden flex flex-col fade-up-1" style={{ height: "calc(100vh - 310px)", minHeight: 420, maxHeight: 720 }}>
         <div className="flex items-center justify-between px-5 py-3 border-b" style={{ borderColor: "var(--border)" }}>
           <span className="font-semibold text-sm">Chat</span>
           {busy && <span className="text-xs badge badge-amber animate-pulse">🤖 Running agent…</span>}

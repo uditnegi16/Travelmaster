@@ -20,7 +20,7 @@ export default function AdminUsers() {
 
   const fetchUsers = async () => {
     const token = await getToken();
-    const res = await fetch("http://127.0.0.1:8000/admin/users", {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/admin/users`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (res.ok) setUsers(await res.json());
@@ -44,7 +44,7 @@ export default function AdminUsers() {
   const resetLimit = async (account_id: string) => {
     setActing(account_id);
     const token = await getToken();
-    await fetch(`http://127.0.0.1:8000/admin/users/${account_id}/reset-limit`, {
+    await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/admin/users/${account_id}/reset-limit`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -100,14 +100,14 @@ export default function AdminUsers() {
                   <div className="flex items-center gap-2">
                     <button
                       disabled={acting === u.account_id}
-                      onClick={() => patch(u.account_id, `http://127.0.0.1:8000/admin/users/${u.account_id}/tier`, { tier: u.tier === "premium" ? "free" : "premium" })}
+                      onClick={() => patch(u.account_id, `${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/admin/users/${u.account_id}/tier`, { tier: u.tier === "premium" ? "free" : "premium" })}
                       className="text-xs px-2 py-1 rounded bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 disabled:opacity-50"
                     >
                       {u.tier === "premium" ? "→ Free" : "→ Premium"}
                     </button>
                     <button
                       disabled={acting === u.account_id}
-                      onClick={() => patch(u.account_id, `http://127.0.0.1:8000/admin/users/${u.account_id}/ban`, { is_banned: !u.is_banned })}
+                      onClick={() => patch(u.account_id, `${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/admin/users/${u.account_id}/ban`, { is_banned: !u.is_banned })}
                       className="text-xs px-2 py-1 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 disabled:opacity-50"
                     >
                       {u.is_banned ? "Unban" : "Ban"}

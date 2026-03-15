@@ -73,19 +73,91 @@ export default function Premium() {
     setErr("");
     try {
       const token = await getToken();
-      const res = await fetch("http://127.0.0.1:8000/me/create-checkout-session", {
+
+      // Step 1 — create Razorpay order
+      const res = await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/me/create-order`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.detail || "Failed to start checkout");
+        throw new Error(data.detail || "Failed to create order");
       }
-      const { url } = await res.json();
-      window.location.href = url;
+      const order = await res.json();
+
+      // Demo mode — no real Razorpay keys
+      if (order.demo) {
+        alert("Demo mode: Razorpay not configured.\n\nIn production, this would open a payment popup.\n\nFor testing, your account will be upgraded now.");
+        const verifyRes = await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/me/verify-payment`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            razorpay_order_id: "demo_order",
+            razorpay_payment_id: "demo_payment",
+            razorpay_signature: "demo_signature",
+          }),
+        });
+        if (verifyRes.ok) {
+          window.location.reload();
+        }
+        return;
+      }
+
+      // Step 2 — open Razorpay popup
+      const options = {
+        key: order.key_id,
+        amount: order.amount,
+        currency: order.currency,
+        name: "TravelGuru",
+        description: "Premium Plan — ₹399/month",
+        order_id: order.order_id,
+        prefill: {
+          name: order.name,
+          email: order.email,
+        },
+        theme: { color: "#0D6E6E" },
+        handler: async (response: any) => {
+          // Step 3 — verify payment with backend
+          try {
+            const verifyRes = await fetch(`${import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000"}/me/verify-payment`, {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+            if (verifyRes.ok) {
+              window.location.reload();
+            } else {
+              setErr("Payment verification failed. Contact support.");
+            }
+          } catch {
+            setErr("Payment verification failed. Contact support.");
+          }
+        },
+        modal: {
+          ondismiss: () => setCheckoutLoading(false),
+        },
+      };
+
+      // Load Razorpay script dynamically
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => {
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+        setCheckoutLoading(false);
+      };
+      script.onerror = () => {
+        setErr("Failed to load Razorpay. Check your internet connection.");
+        setCheckoutLoading(false);
+      };
+      document.body.appendChild(script);
+
     } catch (e: any) {
       setErr(e.message);
-    } finally {
       setCheckoutLoading(false);
     }
   };
@@ -274,7 +346,7 @@ export default function Premium() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
             <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
-          Payments secured by Stripe · Cancel anytime · No hidden fees
+           Payments secured by Razorpay · Cancel anytime · No hidden fees
         </div>
       )}
 

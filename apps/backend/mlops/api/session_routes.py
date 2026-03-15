@@ -347,13 +347,11 @@ def rank_results(
     body: RankIn = RankIn(),
     payload: Dict[str, Any] = Depends(current_user_payload),
 ):
-    print("RANK AUTH HEADER:", request.headers.get("authorization"))   
     """
     Reads duosi.search_results, runs ranking, stores into duosi.ranked_results.
     Also writes an assistant message (narrative) that the UI will display.
     """
     account_id = _account_id(payload)
-    print("AUTH HEADER CHECK - RANK ENDPOINT HIT")
     _assert_session_owner(session_id, account_id)
 
     sr = _get_search_results(session_id)

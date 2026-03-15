@@ -63,7 +63,7 @@ export default function Landing() {
     return <Navigate to="/welcome" replace />;
   }
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white" style={{ overflowX: "hidden", width: "100%" }}>
       {/* HERO */}
       <section className="relative min-h-[720px]">
         <LandingNavbar />
