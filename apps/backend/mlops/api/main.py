@@ -116,3 +116,4 @@ def recommend_cabs_api(request: CabRequest):
     agent_output = {"pickup_location": request.pickup_location, "drop_location": request.drop_location}
     ranked = recommend_cabs(cabs_df=cabs_df, agent_output=agent_output, top_k=request.top_k)
     return {"recommended": ranked.to_dict(orient="records"), "count": len(ranked)}
+
