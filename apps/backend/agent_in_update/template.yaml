@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Travelmaster Agent Backend
+
+Globals:
+  Function:
+    Timeout: 120
+    MemorySize: 1024
+
+Resources:
+  TravelmasterAgentApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+
+  TravelmasterAgentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: lambda_handler.handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TravelmasterAgentApi
+            Path: /{proxy+}
+            Method: ANY
+      Environment:
+        Variables:
+          AMADEUS_CLIENT_ID: FQ4L6Ao0QS6T2lUAvnlMxmBi3fiuCSFH
+          AMADEUS_CLIENT_SECRET: nKACG95s0ZVzPXA
+          AMADEUS_HOSTNAME: test
+          OPENAI_API_KEY: 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
+          OPENAI_BASE_URL: https://api.groq.com/openai/v1
+          PLANNER_MODEL: llama-3.3-70b-versatile
+          COMPOSER_MODEL: REgemma2-9b-itPLACE_ME
+          OPENWEATHER_API_KEY: e2071d9be1ece428b33c7f7f571a828d
+          GOOGLE_MAPS_API_KEY: AIzaSyCIEb5tAW5BfEWedGg6_MGFYIgmoq0N3lw
+          DEFAULT_CURRENCY: INR
+
+Outputs:
+  ApiUrl:
+    Value: !Sub "https://${TravelmasterAgentApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"

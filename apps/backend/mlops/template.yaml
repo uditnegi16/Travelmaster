@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Travelmaster MLOps Backend
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 1024
+
+Resources:
+  TravelmasterMLOpsApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+
+  TravelmasterMLOpsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: lambda_handler.handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TravelmasterMLOpsApi
+            Path: /{proxy+}
+            Method: ANY
+      Environment:
+        Variables:
+          SUPABASE_URL: https://zwrauedicqowninzxeyq.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: sb_publishable_jkhvnAoTu63XUSghsieiRg_yG79tHa7
+          SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3cmF1ZWRpY3Fvd25pbnp4ZXlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc4ODEwNjIsImV4cCI6MjA4MzQ1NzA2Mn0.Bo5SwT_p3Gx-vTrKVTv5mDs2C8XjaJYFXPxCSOh8Dt8
+          DATABASE_URL: postgresql://postgres:[YOUR-PASSWORD]@db.zwrauedicqowninzxeyq.supabase.co:5432/postgres
+          CLERK_JWKS_URL: https://adapting-snail-76.clerk.accounts.dev/.well-known/jwks.json
+          AGENT_URL: http://127.0.0.1:8001
+          AWS_REGION_NAME: ap-south-1
+          SES_FROM_EMAIL: noreply@travelguru.app
+          SES_ENABLED: "false"
+          RAZORPAY_KEY_ID: ""
+          RAZORPAY_KEY_SECRET: ""
+          FRONTEND_URL: REPLACE_AFTER_AMPLIFY
+
+Outputs:
+  ApiUrl:
+    Value: !Sub "https://${TravelmasterMLOpsApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
