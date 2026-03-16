@@ -10,3 +10,4 @@ razorpay
 python-jose[cryptography]
 boto3
 python-dotenv
+pyyaml

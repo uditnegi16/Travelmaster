@@ -7,6 +7,8 @@ import io
 
 from utils.clerk_auth import get_clerk_payload
 from utils.supabase_client import supabase as _supabase
+from fastapi.responses import Response
+import base64
 
 supabase = cast(Any, _supabase)
 router = APIRouter(prefix="/me", tags=["pdf"])
@@ -63,10 +65,14 @@ def export_trip_pdf(
     title = (sess.get("session_title") or "trip_plan").replace(" ", "_").lower()
     filename = f"travelguru_{title}.pdf"
 
-    return StreamingResponse(
-        io.BytesIO(pdf_bytes),
+    pdf_b64 = base64.b64encode(pdf_bytes).decode("utf-8")
+    return Response(
+        content=pdf_b64,
         media_type="application/pdf",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Content-Transfer-Encoding": "base64",
+        }
     )
 
 

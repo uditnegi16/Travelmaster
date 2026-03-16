@@ -452,7 +452,11 @@ export default function SessionDetail() {
                   alert(e.detail || "PDF export not available.");
                   return;
                 }
-                const blob = await res.blob();
+                const b64 = await res.text();
+                const binary = atob(b64);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                const blob = new Blob([bytes], { type: "application/pdf" });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url; a.download = `trip_${sessionId}.pdf`; a.click();

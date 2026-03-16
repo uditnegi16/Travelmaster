@@ -10,6 +10,8 @@ from api.session_routes import router as session_router
 from api.admin_routes import router as admin_router
 from api.share_routes import router as share_router
 from api.pdf_routes import router as pdf_router
+from fastapi.middleware.cors import CORSMiddleware
+
 # in the routers section:
 import os
 from utils import health_logger
@@ -19,7 +21,6 @@ app = FastAPI(
     version="1.0.0",
     description="MLOps backend: auth, sessions, agent orchestration, ranking",
 )
-
 # ── CORS ─────────────────────────────────────────────────────────
 # FIX: was missing 127.0.0.1 variants — frontend on 127.0.0.1 was blocked
 app.add_middleware(
@@ -27,9 +28,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        # ── Production ── add your deployed frontend URL here before deploying
+        "https://main.d1dssl0hm1ugfp.amplifyapp.com",
         os.getenv("FRONTEND_URL", ""),
     ],
     allow_credentials=True,

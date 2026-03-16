@@ -15,7 +15,7 @@ Resources:
       Cors:
         AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
         AllowHeaders: "'Content-Type,Authorization'"
-        AllowOrigin: "'*'"
+        AllowOrigin: "'https://main.d1dssl0hm1ugfp.amplifyapp.com'"
 
   TravelmasterMLOpsFunction:
     Type: AWS::Serverless::Function

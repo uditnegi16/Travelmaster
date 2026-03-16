@@ -448,8 +448,14 @@ export default function TripNew() {
                       alert(err.detail || "PDF export not available yet.");
                       return;
                     }
-                    const blob = await res.blob();
+
+                    const b64 = await res.text();
+                    const binary = atob(b64);
+                    const bytes = new Uint8Array(binary.length);
+                    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                    const blob = new Blob([bytes], { type: "application/pdf" });
                     const url = URL.createObjectURL(blob);
+
                     const a = document.createElement("a");
                     a.href = url; a.download = `trip_${sessionId}.pdf`; a.click();
                     URL.revokeObjectURL(url);
