@@ -25,6 +25,9 @@ Resources:
       Runtime: python3.12
       Architectures:
         - x86_64
+      Policies:
+        - S3CrudPolicy:
+            BucketName: travelmaster-pdfs
       Events:
         Api:
           Type: Api
@@ -45,7 +48,7 @@ Resources:
           SES_ENABLED: "false"
           RAZORPAY_KEY_ID: ""
           RAZORPAY_KEY_SECRET: ""
-          FRONTEND_URL: http://localhost:5173
+          FRONTEND_URL: https://main.d1dssl0hm1ugfp.amplifyapp.com
 
 Outputs:
   ApiUrl:

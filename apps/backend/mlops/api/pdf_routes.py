@@ -78,6 +78,25 @@ def export_trip_pdf(
 
 def _build_pdf(sess: dict, sr: dict, rr: dict) -> bytes:
     """Build PDF bytes using reportlab."""
+    import json as _json
+
+    def _parse(val):
+        if isinstance(val, str):
+            try:
+                return _json.loads(val)
+            except Exception:
+                return []
+        return val or []
+
+    # Parse all JSON string fields
+    rr = dict(rr)
+    rr["recommended_flights"] = _parse(rr.get("recommended_flights"))
+    rr["other_flights"]       = _parse(rr.get("other_flights"))
+    rr["recommended_hotels"]  = _parse(rr.get("recommended_hotels"))
+    rr["other_hotels"]        = _parse(rr.get("other_hotels"))
+    rr["places"]              = _parse(rr.get("places"))
+    rr["weather"]             = _parse(rr.get("weather"))
+
     try:
         from reportlab.lib.pagesizes import A4
         from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -135,7 +154,7 @@ def _build_pdf(sess: dict, sr: dict, rr: dict) -> bytes:
                 str((f.get("arrival_time") or "")[:16].replace("T", " ")),
                 str(f.get("duration") or "—"),
                 str(f.get("stops") or "0"),
-                f"₹{f.get('price', 0):,}" if f.get("price") else "—",
+                f"Rs.{f.get('price', 0):,}" if f.get("price") else "—",
             ]
         ]
         t = Table(flight_data, colWidths=[3.5*cm, 4*cm, 4*cm, 2.5*cm, 1.5*cm, 2.5*cm])
@@ -164,7 +183,7 @@ def _build_pdf(sess: dict, sr: dict, rr: dict) -> bytes:
                 str(h.get("stars") or "—"),
                 str(h.get("check_in") or "—"),
                 str(h.get("check_out") or "—"),
-                f"₹{h.get('price_per_night', 0):,}" if h.get("price_per_night") else "—",
+                f"Rs.{h.get('price_per_night', 0):,}" if h.get("price_per_night") else "—",
             ]
         ]
         t2 = Table(hotel_data, colWidths=[4.5*cm, 2.5*cm, 1.5*cm, 2.5*cm, 2.5*cm, 2.5*cm])
@@ -200,7 +219,7 @@ def _build_pdf(sess: dict, sr: dict, rr: dict) -> bytes:
         brows = []
         for k, v in budget.items():
             if isinstance(v, (int, float)) and v > 0:
-                brows.append([k.replace("_", " ").title(), f"₹{v:,.0f}"])
+                brows.append([k.replace("_", " ").title(), f"Rs.{v:,.0f}"])
         if brows:
             bt = Table([["Category", "Amount"]] + brows, colWidths=[8*cm, 4*cm])
             bt.setStyle(TableStyle([
