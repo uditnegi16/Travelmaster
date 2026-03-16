@@ -448,17 +448,12 @@ export default function TripNew() {
                       alert(err.detail || "PDF export not available yet.");
                       return;
                     }
-
-                    const b64 = await res.text();
-                    const binary = atob(b64);
-                    const bytes = new Uint8Array(binary.length);
-                    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-                    const blob = new Blob([bytes], { type: "application/pdf" });
-                    const url = URL.createObjectURL(blob);
-
+                    const json = await res.json();
                     const a = document.createElement("a");
-                    a.href = url; a.download = `trip_${sessionId}.pdf`; a.click();
-                    URL.revokeObjectURL(url);
+                    a.href = json.url;
+                    a.download = json.filename;
+                    a.target = "_blank";
+                    a.click();
                   } catch { alert("Failed to export PDF."); }
                   finally { setPdfLoading(false); }
                 }}

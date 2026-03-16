@@ -9,6 +9,7 @@ from utils.clerk_auth import get_clerk_payload
 from utils.supabase_client import supabase as _supabase
 from fastapi.responses import Response
 import base64
+import boto3
 
 supabase = cast(Any, _supabase)
 router = APIRouter(prefix="/me", tags=["pdf"])
@@ -65,15 +66,25 @@ def export_trip_pdf(
     title = (sess.get("session_title") or "trip_plan").replace(" ", "_").lower()
     filename = f"travelguru_{title}.pdf"
 
-    pdf_b64 = base64.b64encode(pdf_bytes).decode("utf-8")
-    return Response(
-        content=pdf_b64,
-        media_type="application/pdf",
-        headers={
-            "Content-Disposition": f'attachment; filename="{filename}"',
-            "Content-Transfer-Encoding": "base64",
-        }
+    s3 = boto3.client("s3", region_name="ap-south-1")
+    bucket = "travelmaster-pdfs"
+    key = f"pdfs/{session_id}/{filename}"
+
+    s3.put_object(
+        Bucket=bucket,
+        Key=key,
+        Body=pdf_bytes,
+        ContentType="application/pdf",
+        ContentDisposition=f'attachment; filename="{filename}"',
     )
+
+    presigned_url = s3.generate_presigned_url(
+        "get_object",
+        Params={"Bucket": bucket, "Key": key},
+        ExpiresIn=120,
+    )
+
+    return {"url": presigned_url, "filename": filename}
 
 
 def _build_pdf(sess: dict, sr: dict, rr: dict) -> bytes:
