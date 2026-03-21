@@ -86,15 +86,15 @@ YOUR_GITHUB_VIDEO_ASSET_URL_HERE
 <!-- ================================================================ -->
 
 <p align="center">
-  <img src="screenshots/landing.png" width="48%" alt="Landing Page" />
-  <img src="screenshots/dashboard.png" width="48%" alt="Dashboard" />
+  <img src="screenshots/Screenshot 2026-03-21 122015.png" width="48%" alt="Landing Page" />
+  <img src="screenshots/Screenshot 2026-03-21 122343.png" width="48%" alt="Dashboard" />
 </p>
 <p align="center">
-  <img src="screenshots/trip.png" width="48%" alt="Trip Results" />
-  <img src="screenshots/pdf.png" width="48%" alt="PDF Export" />
+  <img src="screenshots/Screenshot 2026-03-21 122541.png" width="48%" alt="Trip Results" />
+  <img src="screenshots/Screenshot 2026-03-21 122445.png" width="48%" alt="PDF Export" />
 </p>
 <p align="center">
-  <img src="screenshots/admin.png" width="48%" alt="Admin Panel" />
+  <img src="screenshots/Screenshot 2026-03-21 122257.png" width="48%" alt="Admin Panel" />
   <img src="screenshots/dark.png" width="48%" alt="Dark Mode" />
 </p>
 
