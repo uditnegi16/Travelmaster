@@ -2,7 +2,7 @@
   <!-- ============================================================ -->
   <!-- REPLACE: Upload your banner to GitHub and paste the URL here -->
   <!-- ============================================================ -->
-  <img width="100%" alt="TravelMaster Banner" src="YOUR_BANNER_IMAGE_URL_HERE" />
+  <img width="100%" alt="TravelMaster Banner" src="docs/banner.png"/>
 </p>
 
 <p align="center">
@@ -108,7 +108,7 @@ YOUR_GITHUB_VIDEO_ASSET_URL_HERE
 <!-- ================================================================ -->
 
 <p align="center">
-  <img width="90%" alt="TravelMaster System Architecture" src="YOUR_ARCHITECTURE_DIAGRAM_URL_HERE" />
+  <img width="90%" alt="TravelMaster System Architecture" src="docs/architecture.png" />
 </p>
 
 ---
