@@ -95,7 +95,6 @@ YOUR_GITHUB_VIDEO_ASSET_URL_HERE
 </p>
 <p align="center">
   <img src="screenshots/Screenshot 2026-03-21 122257.png" width="48%" alt="Admin Panel" />
-  <img src="screenshots/dark.png" width="48%" alt="Dark Mode" />
 </p>
 
 ---
