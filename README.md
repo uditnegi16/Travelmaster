@@ -1,41 +1,145 @@
-# ✈ TravelMaster — AI-Powered Travel Planning SaaS
+<p align="center">
+  <!-- ============================================================ -->
+  <!-- REPLACE: Upload your banner to GitHub and paste the URL here -->
+  <!-- ============================================================ -->
+  <img width="100%" alt="TravelMaster Banner" src="YOUR_BANNER_IMAGE_URL_HERE" />
+</p>
 
-> Plan complete trips with AI in seconds. Just describe your trip in plain English — TravelMaster finds flights, hotels, places, weather and builds a full budget breakdown automatically.
+<p align="center">
+  <a href="https://main.d1dssl0hm1ugfp.amplifyapp.com"><img src="https://img.shields.io/badge/Live_Demo-Visit_App-7c3aed?style=flat-square" alt="Live Demo" /></a>
+  <a href="https://github.com/uditnegi16/Travelmaster"><img src="https://img.shields.io/badge/GitHub-TravelMaster-181717?style=flat-square&logo=github" alt="GitHub" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.12" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/AWS-Deployed-FF9900?style=flat-square&logo=amazonaws&logoColor=white" alt="AWS" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React" /></a>
+</p>
 
-![Python](https://img.shields.io/badge/Python-3.12-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.118-green)
-![React](https://img.shields.io/badge/React-18-61DAFB) 
-![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E)
-![LangGraph](https://img.shields.io/badge/Agent-LangGraph-orange)
+<p align="center">
+  <img src="https://img.shields.io/badge/Multi--Agent-LangGraph-orange?style=flat-square" alt="Multi-Agent" />
+  <img src="https://img.shields.io/badge/Serverless-AWS_Lambda-FF9900?style=flat-square" alt="Serverless" />
+  <img src="https://img.shields.io/badge/ML_Ranking-scikit--learn-F7931E?style=flat-square" alt="ML Ranking" />
+  <img src="https://img.shields.io/badge/Auth-Clerk_JWT-6C47FF?style=flat-square" alt="Clerk Auth" />
+  <img src="https://img.shields.io/badge/Production-Ready-brightgreen?style=flat-square" alt="Production Ready" />
+  <img src="https://img.shields.io/badge/Admin-Panel-blue?style=flat-square" alt="Admin Panel" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Groq-llama--3.3--70b-red?style=flat-square" alt="Groq" />
+  <img src="https://img.shields.io/badge/Amadeus-Flights_%26_Hotels-00539B?style=flat-square" alt="Amadeus" />
+  <img src="https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase" alt="Supabase" />
+</p>
 
 ---
 
-## What It Does
+## Overview
 
-TravelMaster is a full-stack AI SaaS where users type a natural language query like:
+TravelMaster is a full-stack AI SaaS that plans complete trips from a single sentence. Type a natural language query — TravelMaster orchestrates a **LangGraph multi-agent system** that searches flights, hotels, places and weather **in parallel**, ranks results using an **ML scoring pipeline**, and generates an AI travel narrative. Deployed serverless on **AWS Lambda** with a production admin panel, tier-based rate limiting, PDF export via S3, and shareable trip links.
 
 > *"Plan a 3-day trip from Delhi to Mumbai for 2 adults, budget ₹30k, March 25–27"*
-
-And get back a complete plan with:
-- ✅ Ranked flight options with booking links
-- ✅ Ranked hotel options with pricing
-- ✅ Places to visit with ratings
-- ✅ Weather forecast for travel dates
-- ✅ Full budget breakdown
-- ✅ AI-generated trip narrative
+>
+> → Ranked flights · Ranked hotels · Places to visit · Weather forecast · Budget breakdown · AI narrative — in seconds.
 
 ---
 
-## Architecture
+## Demo
 
-```
-User → React Frontend (:5173)
-     → MLOps Backend (:8000)   ← Auth, Sessions, Ranking, Rate Limiting
-     → Agent Service (:8001)   ← LangGraph AI Planner + Tool Execution
-     → Amadeus API             ← Flights + Hotels
-     → Google Places API       ← Places of Interest
-     → OpenWeather API         ← Weather Forecast
-     → Supabase (PostgreSQL)   ← Database
+<!-- ================================================================ -->
+<!-- HOW TO EMBED YOUR VIDEO (GitHub renders MP4 natively):           -->
+<!-- 1. Go to your repo → Issues → New Issue                          -->
+<!-- 2. Drag and drop your .mp4 file into the comment box             -->
+<!-- 3. GitHub generates a URL like:                                  -->
+<!--    https://github.com/user/repo/assets/USERID/FILEID.mp4        -->
+<!-- 4. Paste that URL below on its own line — no markdown needed     -->
+<!-- 5. Delete these instructions after replacing the URL             -->
+<!-- ================================================================ -->
+
+YOUR_GITHUB_VIDEO_ASSET_URL_HERE
+
+---
+
+## 🌐 Live Demo
+
+| Service | URL |
+|---------|-----|
+| Frontend | https://main.d1dssl0hm1ugfp.amplifyapp.com |
+| MLOps API | https://g2d019moz2.execute-api.ap-south-1.amazonaws.com/prod/health |
+| Agent API | https://napum590vf.execute-api.ap-south-1.amazonaws.com/prod/health |
+
+---
+
+## Screenshots
+
+<!-- ================================================================ -->
+<!-- HOW TO ADD SCREENSHOTS:                                          -->
+<!-- 1. Take screenshots using Windows Snipping Tool (Win+Shift+S)   -->
+<!-- 2. Create a /screenshots folder in your repo                     -->
+<!-- 3. Upload the 6 images listed below                              -->
+<!-- 4. The paths below will auto-resolve once images are uploaded    -->
+<!-- ================================================================ -->
+<!-- Screenshots to capture:                                          -->
+<!-- 1. landing.png    — Landing page hero before login               -->
+<!-- 2. dashboard.png  — Dashboard with trip history cards            -->
+<!-- 3. trip.png       — Chat with AI results (flights/hotels visible) -->
+<!-- 4. pdf.png        — Downloaded PDF opened in browser             -->
+<!-- 5. admin.png      — Admin dashboard with metrics                 -->
+<!-- 6. dark.png       — Any page in dark mode                        -->
+<!-- ================================================================ -->
+
+<p align="center">
+  <img src="screenshots/landing.png" width="48%" alt="Landing Page" />
+  <img src="screenshots/dashboard.png" width="48%" alt="Dashboard" />
+</p>
+<p align="center">
+  <img src="screenshots/trip.png" width="48%" alt="Trip Results" />
+  <img src="screenshots/pdf.png" width="48%" alt="PDF Export" />
+</p>
+<p align="center">
+  <img src="screenshots/admin.png" width="48%" alt="Admin Panel" />
+  <img src="screenshots/dark.png" width="48%" alt="Dark Mode" />
+</p>
+
+---
+
+## System Architecture
+
+<!-- ================================================================ -->
+<!-- REPLACE: Upload your architecture diagram to /docs/ in the repo  -->
+<!-- and replace the src URL below                                     -->
+<!-- ================================================================ -->
+
+<p align="center">
+  <img width="90%" alt="TravelMaster System Architecture" src="YOUR_ARCHITECTURE_DIAGRAM_URL_HERE" />
+</p>
+
+---
+
+## Agent Flow
+
+```mermaid
+flowchart TD
+    A["🗣️ User Query\nPlain English — no forms"] --> B["MLOps Lambda\nFastAPI · Auth · Rate Limiting · Sessions"]
+    B --> C["Agent Lambda\nLangGraph Orchestrator"]
+    C --> D["🧠 Planner Agent\nDecides which tools to call"]
+    D --> E["⚡ Tool Router\nParallel Execution"]
+    E --> F["✈️ Amadeus\nFlights"]
+    E --> G["🏨 Amadeus\nHotels"]
+    E --> H["📍 Google Places"]
+    E --> I["🌤️ OpenWeather"]
+    E --> J["💰 Budget Calculator"]
+    F & G & H & I & J --> K["📊 ML Ranking Pipeline\nscikit-learn weighted scoring"]
+    K --> L["✍️ Composer Agent\nAI Narrative Generation"]
+    L --> M["💾 Supabase\nResults stored in PostgreSQL"]
+    M --> N["🖥️ React Frontend\nFlights · Hotels · Places · Weather · PDF · Share"]
+
+    style A fill:#7c3aed,color:#fff,stroke:#5b21b6
+    style B fill:#1e40af,color:#fff,stroke:#1e3a8a
+    style C fill:#1e40af,color:#fff,stroke:#1e3a8a
+    style D fill:#0369a1,color:#fff,stroke:#075985
+    style E fill:#0369a1,color:#fff,stroke:#075985
+    style K fill:#065f46,color:#fff,stroke:#064e3b
+    style L fill:#0369a1,color:#fff,stroke:#075985
+    style M fill:#1e40af,color:#fff,stroke:#1e3a8a
+    style N fill:#7c3aed,color:#fff,stroke:#5b21b6
 ```
 
 ---
@@ -44,60 +148,107 @@ User → React Frontend (:5173)
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | React + Vite + TypeScript + Tailwind CSS |
-| Auth | Clerk (JWT-based) |
-| MLOps Backend | FastAPI (Python 3.12) |
-| Agent Service | LangGraph + FastAPI (Python 3.12) |
-| Database | Supabase (PostgreSQL) |
-| AI / LLM | OpenAI GPT-4o / Groq llama-3.3-70b |
-| Flight & Hotel APIs | Amadeus |
+| Frontend | React 19, Vite, TypeScript, Tailwind CSS |
+| Auth | Clerk (JWT-based, protected routes) |
+| MLOps Backend | FastAPI 0.118, Python 3.12, Mangum |
+| AI Agent | LangGraph, FastAPI, Python 3.12, Mangum |
+| LLM | Groq llama-3.3-70b-versatile |
+| Flight + Hotel Data | Amadeus API |
 | Places | Google Places API |
 | Weather | OpenWeather API |
-| PDF Export | ReportLab |
+| ML Ranking | scikit-learn weighted scoring pipeline |
+| Database | Supabase (PostgreSQL) |
+| PDF Export | ReportLab + AWS S3 presigned URLs |
 | Email | AWS SES (boto3) |
+| Frontend Hosting | AWS Amplify (CI/CD from GitHub) |
+| Backend Hosting | AWS Lambda + API Gateway |
+| Infrastructure as Code | AWS SAM |
+| File Storage | AWS S3 |
+| Monitoring | AWS CloudWatch |
 
 ---
 
-## Prerequisites
+## Features
+
+- **Natural Language Planning** — no forms, no dropdowns, just describe your trip in plain English
+- **LangGraph Multi-Agent** — planner agent → tool router → composer agent in sequence
+- **Parallel Tool Execution** — flights, hotels, places, weather and budget fetched simultaneously
+- **ML Ranking Pipeline** — scikit-learn weighted scoring, not just raw LLM output
+- **Tier-Based Rate Limiting** — free (5/month) vs premium (100/month), configurable from admin panel without redeploy
+- **Session History** — all past trips saved, searchable, re-openable like ChatGPT history
+- **PDF Export** — full trip plan downloaded via AWS S3 presigned URL
+- **Trip Sharing** — public read-only link with no login required
+- **Admin Panel** — user management, config flags, audit log, health monitoring
+- **Dark / Light Mode** — system preference detection with manual toggle and persistence
+- **Serverless Architecture** — AWS Lambda + API Gateway, zero server management
+- **Email Notifications** — welcome, limit reached, trip ready via AWS SES
+
+---
+
+## Why TravelMaster
+
+| Traditional Travel Apps | TravelMaster |
+|------------------------|-------------|
+| Search forms with dropdowns | Plain English natural language |
+| Manual comparison across tabs | AI-ranked results in one view |
+| Static results, no scoring | ML pipeline scores by price, rating, convenience |
+| No narrative or context | Full budget breakdown + AI trip narrative |
+| No admin control | Full ops dashboard with real-time config flags |
+| Fixed rate limits in code | Configurable per tier from database, zero redeploy |
+
+---
+
+## AWS Infrastructure
+
+| Service | Purpose |
+|---------|---------|
+| AWS Amplify | Frontend hosting + auto CI/CD from GitHub push |
+| AWS Lambda | MLOps backend + Agent backend (serverless) |
+| Amazon API Gateway | Public HTTPS endpoints for both Lambdas |
+| Amazon S3 (`travelmaster-pdfs`) | PDF storage + presigned URL delivery |
+| AWS SAM | Infrastructure as code — Lambda + API Gateway |
+| Amazon CloudWatch | Lambda logs and error monitoring |
+| AWS SES | Transactional emails |
+
+---
+
+## Local Development — 3 Terminals
+
+### Prerequisites
 
 - Python 3.12
 - Node.js 18+
-- A Supabase account and project
-- A Clerk account
-- Amadeus API credentials (free sandbox at developers.amadeus.com)
-- OpenAI API key OR Groq API key (free at console.groq.com)
+- [uv](https://github.com/astral-sh/uv) — `pip install uv`
+- Supabase account + project
+- Clerk account
+- Amadeus API credentials — free sandbox at [developers.amadeus.com](https://developers.amadeus.com)
+- Groq API key — free at [console.groq.com](https://console.groq.com)
 - Google Maps API key
-- OpenWeather API key (free at openweathermap.org)
+- OpenWeather API key — free at [openweathermap.org](https://openweathermap.org)
 
----
-
-## Setup — 3 Terminals Required
-
-### Clone the repo
+### Clone
 
 ```bash
 git clone https://github.com/uditnegi16/Travelmaster.git
 cd Travelmaster
 ```
 
----
-
 ### Terminal 1 — Agent Service (port 8001)
 
 ```powershell
-cd D:\Travelmaster\apps\backend\agent_in_update
+cd apps/backend/agent_in_update
 ```
 
-Create `.env` file:
+Create `.env`:
 
 ```env
 AMADEUS_CLIENT_ID=your_amadeus_client_id
 AMADEUS_CLIENT_SECRET=your_amadeus_client_secret
 AMADEUS_HOSTNAME=test
-OPENAI_API_KEY=your_openai_or_groq_key
-OPENAI_BASE_URL=                          # leave empty for OpenAI, set https://api.groq.com/openai/v1 for Groq
-PLANNER_MODEL=gpt-4o                      # or llama-3.3-70b-versatile for Groq
-COMPOSER_MODEL=gpt-4o-mini                # or llama3-8b-8192 for Groq
+OPENAI_API_KEY=your_groq_key
+OPENAI_BASE_URL=https://api.groq.com/openai/v1
+PLANNER_MODEL=llama-3.3-70b-versatile
+COMPOSER_MODEL=llama-3.3-70b-versatile
 OPENWEATHER_API_KEY=your_openweather_key
 GOOGLE_MAPS_API_KEY=your_google_maps_key
 DEFAULT_CURRENCY=INR
@@ -106,39 +257,36 @@ DEFAULT_CURRENCY=INR
 Copy `.env` to backend root (required for module resolution):
 
 ```powershell
-Copy-Item ".env" "D:\Travelmaster\apps\backend\.env" -Force
-Copy-Item ".env" "D:\Travelmaster\.env" -Force
+Copy-Item ".env" "../../.env" -Force
+Copy-Item ".env" "../../../.env" -Force
 ```
 
-Create and activate virtual environment, install dependencies and run:
+Install and run:
+
 ```powershell
-cd D:\Travelmaster
+cd ../../..
 uv venv
 .venv\Scripts\activate
-
-cd apps\backend
+cd apps/backend
 uv pip install -r requirements_new.txt
-
-$env:PYTHONPATH="D:\Travelmaster\apps\backend"
+$env:PYTHONPATH="$PWD"
 uvicorn agent_in_update.langgraph_agents.api:app --reload --port 8001
 ```
 
 ✅ Agent running at `http://127.0.0.1:8001`
 
----
-
 ### Terminal 2 — MLOps Backend (port 8000)
 
 ```powershell
-cd D:\Travelmaster\apps\backend\mlops
+cd apps/backend/mlops
 ```
 
-Create `.env` file:
+Create `.env`:
 
 ```env
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJ...your_service_role_key
-SUPABASE_ANON_KEY=eyJ...your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+SUPABASE_ANON_KEY=your_anon_key
 DATABASE_URL=postgresql://postgres:password@db.your-project.supabase.co:5432/postgres
 CLERK_JWKS_URL=https://your-clerk-domain.clerk.accounts.dev/.well-known/jwks.json
 AGENT_URL=http://127.0.0.1:8001
@@ -156,21 +304,20 @@ uvicorn api.main:app --reload --port 8000
 
 ✅ MLOps running at `http://127.0.0.1:8000`
 
----
-
 ### Terminal 3 — Frontend (port 5173)
 
 ```powershell
-cd D:\Travelmaster\apps\frontend\travelguru-frontend
+cd apps/frontend
 ```
 
-Create `.env` file:
+Create `.env`:
 
 ```env
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_publishable_key
+VITE_API_BASE=http://127.0.0.1:8000
 ```
 
-Install and run:
+Run:
 
 ```powershell
 npm install
@@ -181,90 +328,67 @@ npm run dev
 
 ---
 
+## AWS Deployment
+
+### Prerequisites
+
+- AWS CLI configured (`aws configure`)
+- SAM CLI installed — [install guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html)
+- S3 bucket: `aws s3 mb s3://travelmaster-pdfs --region ap-south-1`
+
+### Deploy Agent Lambda
+
+```powershell
+cd apps/backend/agent_in_update
+sam build
+sam deploy --guided
+```
+
+Stack name: `travelmaster-agent` · Region: `ap-south-1`
+
+### Deploy MLOps Lambda
+
+```powershell
+cd apps/backend/mlops
+sam build
+sam deploy --guided
+```
+
+Stack name: `travelmaster-mlops` · Region: `ap-south-1`
+
+### Deploy Frontend
+
+Push to `main` — Amplify auto-deploys on every push.
+
+**Required Amplify environment variables:**
+
+```
+VITE_CLERK_PUBLISHABLE_KEY = pk_live_your_key
+VITE_API_BASE = https://g2d019moz2.execute-api.ap-south-1.amazonaws.com/prod
+```
+
+---
+
 ## Database Setup
 
-Run these migrations in your Supabase SQL editor before first use:
+All SQL queries to build the complete database schema are in a separate file:
 
-```sql
--- Add tier and rate limiting to user profiles
-ALTER TABLE user_db.user_profiles
-  ADD COLUMN IF NOT EXISTS tier TEXT DEFAULT 'free',
-  ADD COLUMN IF NOT EXISTS searches_this_month INT DEFAULT 0,
-  ADD COLUMN IF NOT EXISTS searches_reset_at TIMESTAMPTZ DEFAULT date_trunc('month', now()),
-  ADD COLUMN IF NOT EXISTS is_banned BOOLEAN DEFAULT false;
+📄 **[database_setup.sql](database_setup.sql)**
 
-ALTER TABLE user_db.user_profiles ALTER COLUMN email DROP NOT NULL;
-
--- Shared trips table
-CREATE TABLE IF NOT EXISTS hud.shared_trips (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  search_id UUID NOT NULL REFERENCES duosi.search_sessions(search_id) ON DELETE CASCADE,
-  account_id UUID NOT NULL,
-  share_token TEXT UNIQUE NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
--- Admin tables
-CREATE TABLE IF NOT EXISTS user_db.admin_users (
-  admin_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  clerk_user_id TEXT UNIQUE NOT NULL,
-  email TEXT NOT NULL,
-  role TEXT DEFAULT 'analyst',
-  is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  last_login TIMESTAMPTZ,
-  CONSTRAINT admin_users_role_check CHECK (role IN ('super_admin', 'support', 'analyst'))
-);
-
-CREATE TABLE IF NOT EXISTS user_db.app_config (
-  key TEXT PRIMARY KEY, value TEXT NOT NULL, description TEXT,
-  updated_by UUID REFERENCES user_db.admin_users(admin_id) ON DELETE SET NULL,
-  updated_at TIMESTAMPTZ DEFAULT now()
-);
-
-INSERT INTO user_db.app_config (key, value, description) VALUES
-  ('free_tier_monthly_limit', '5', 'Max searches/month free users'),
-  ('premium_tier_monthly_limit', '100', 'Max searches/month premium users'),
-  ('agent_timeout_seconds', '60', 'Agent timeout'),
-  ('maintenance_mode', 'false', 'Block all new searches'),
-  ('fallback_model_enabled', 'true', 'Fall back to Groq if OpenAI fails'),
-  ('pdf_export_enabled', 'true', 'Feature flag PDF export'),
-  ('trip_sharing_enabled', 'true', 'Feature flag shareable links')
-ON CONFLICT (key) DO NOTHING;
-
-CREATE TABLE IF NOT EXISTS user_db.admin_audit_log (
-  log_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  admin_id UUID REFERENCES user_db.admin_users(admin_id) ON DELETE SET NULL,
-  action TEXT NOT NULL, target_type TEXT, target_id TEXT,
-  metadata JSONB DEFAULT '{}'::jsonb, ip_address TEXT,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS user_db.health_logs (
-  log_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  service TEXT NOT NULL, status TEXT NOT NULL,
-  response_time_ms INT, error_message TEXT,
-  metadata JSONB DEFAULT '{}'::jsonb,
-  checked_at TIMESTAMPTZ DEFAULT now()
-);
-
--- Grants
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA user_db TO anon, authenticated, service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA hud TO anon, authenticated, service_role;
-```
+Run the queries in your Supabase SQL editor in order.
 
 ---
 
 ## Admin Setup
 
-Add yourself as admin in Supabase SQL editor (replace with your Clerk user ID from Clerk dashboard):
+Get your Clerk user ID from Clerk Dashboard → Users → click your account → copy `user_xxx` ID.
 
 ```sql
 INSERT INTO user_db.admin_users (clerk_user_id, email, role, is_active)
 VALUES ('user_your_clerk_id_here', 'your@email.com', 'super_admin', true);
 ```
 
-Then visit `http://localhost:5173` → sign in → you'll be auto-redirected to `/admin/dashboard`.
+Sign in on the live app → auto-redirected to `/admin/dashboard`.
 
 ---
 
@@ -280,40 +404,40 @@ Then visit `http://localhost:5173` → sign in → you'll be auto-redirected to 
 | PDF export | ✅ | ✅ |
 | Shareable trip links | ✅ | ✅ |
 
-> Free tier limit resets at the start of every month. Admins can manually reset any user's limit from the Admin panel.
+> Limits reset at the start of every month. Admins can manually reset any user from the Admin panel.
 
 ---
 
 ## Admin Panel
 
-Visit `/admin/dashboard` after signing in with an admin account.
-
-| Page | URL | What it does |
-|------|-----|-------------|
+| Page | URL | Purpose |
+|------|-----|---------|
 | Dashboard | `/admin/dashboard` | Business metrics — users, searches, success rate |
-| Users | `/admin/users` | Manage users — upgrade tier, ban, reset limit |
-| Health | `/admin/health` | Live service status |
-| Config | `/admin/config` | Edit rate limits and feature flags without redeploy |
+| Users | `/admin/users` | Upgrade tier, ban users, reset monthly limit |
+| Health | `/admin/health` | Live Lambda + Supabase service status |
+| Config | `/admin/config` | Edit rate limits + feature flags — no redeploy needed |
 | Audit Log | `/admin/audit` | All admin actions with timestamp |
 
 ---
 
-## Key Features
+## Common Issues
 
-- **Natural language trip planning** — no forms, no filters, just describe your trip
-- **AI agent with fallback** — primary LLM with automatic fallback on timeout
-- **ML ranking pipeline** — flights and hotels scored and ranked by price, rating, stars
-- **Rate limiting** — configurable per tier, stored in database
-- **PDF export** — download full trip plan as PDF
-- **Trip sharing** — share a read-only link with anyone, no login required
-- **Admin panel** — full operations dashboard
-- **Email notifications** — trip ready, welcome, limit reached (AWS SES)
+**`OPENAI_API_KEY is not set`** — Copy `.env` from `agent_in_update/` to `apps/backend/` and repo root. `core/config.py` looks 3 levels up.
+
+**`Invalid API key` (Supabase)** — Ensure `SUPABASE_SERVICE_ROLE_KEY` starts with `eyJ` with no spaces.
+
+**Hotels not showing** — Check `hotel_scoring.yaml` — `city_required` must be `false`. Agent returns IATA city codes (e.g. `BOM`) not city names.
+
+**`monthly_limit_reached`** — Go to Admin → Users → Reset, or run:
+```sql
+UPDATE user_db.user_profiles SET searches_this_month = 0 WHERE email = 'your@email.com';
+```
+
+**PDF corrupted** — Ensure S3 presigned URL delivery is used, not direct binary response through API Gateway.
 
 ---
 
 ## Package Versions (Critical)
-
-These versions are tested and working together:
 
 ```
 supabase==2.28.0
@@ -323,21 +447,7 @@ uvicorn==0.37.0
 postgrest==2.28.0
 ```
 
-> ⚠️ Do not downgrade `supabase` below 2.28.0 — it breaks the `.insert().select()` chain used throughout the codebase.
-
----
-
-## Common Issues
-
-**`OPENAI_API_KEY is not set`** — Copy `.env` from `agent_in_update/` to both `apps/backend/` and the repo root. The `core/config.py` looks 3 levels up from its location.
-
-**`Invalid API key` (Supabase)** — Ensure `SUPABASE_SERVICE_ROLE_KEY` starts with `eyJ` and has no spaces or quotes around it.
-
-**Hotels not showing** — Check `hotel_scoring.yaml` — `city_required` must be `false`. The agent returns hotels with IATA city codes (e.g. `BOM`) which don't match city names (e.g. `Mumbai`).
-
-**`monthly_limit_reached`** — Go to Admin → Users → Reset, or run: `UPDATE user_db.user_profiles SET searches_this_month = 0 WHERE email = 'your@email.com';`
-
-**`SyncQueryRequestBuilder has no attribute select`** — Run `pip install supabase==2.28.0 httpx==0.28.1`
+> ⚠️ Do not downgrade `supabase` below 2.28.0 — breaks the `.insert().select()` chain.
 
 ---
 
@@ -347,22 +457,23 @@ postgrest==2.28.0
 Travelmaster/
 ├── apps/
 │   ├── backend/
-│   │   ├── agent_in_update/          ← LangGraph AI agent service (:8001)
-│   │   │   ├── langgraph_agents/     ← Planner, Composer, Orchestrator
-│   │   │   ├── tools/                ← Flight, Hotel, Places, Weather, Budget
-│   │   │   ├── postprocessing/       ← Enrichment pipeline
-│   │   │   └── .env                  ← Agent environment variables
-│   │   ├── mlops/                    ← FastAPI MLOps backend (:8000)
-│   │   │   ├── api/                  ← Routes: sessions, users, admin, pdf, share
-│   │   │   ├── pipelines/            ← ML ranking: flights + hotels
-│   │   │   ├── utils/                ← Auth, rate limiter, email, health logger
-│   │   │   └── .env                  ← MLOps environment variables
-│   │   └── core/                     ← Shared config and Amadeus client
-│   └── frontend/
-│       └── travelguru-frontend/      ← React app (:5173)
-│           ├── src/app/routes/       ← All pages including admin/
-│           └── .env                  ← Clerk publishable key
-└── requirements_new.txt              ← Full Python dependencies
+│   │   ├── agent_in_update/          ← LangGraph AI agent (Lambda :8001)
+│   │   │   ├── langgraph_agents/     ← Planner, Composer, Tool Router
+│   │   │   ├── shared/               ← Schemas + constants
+│   │   │   ├── postprocessing/       ← ML enrichment pipeline
+│   │   │   ├── core/                 ← Amadeus client + config
+│   │   │   ├── lambda_handler.py     ← AWS Lambda entry point
+│   │   │   └── template.yaml         ← SAM deployment config
+│   │   └── mlops/                    ← FastAPI MLOps backend (Lambda :8000)
+│   │       ├── api/                  ← Routes: sessions, users, admin, pdf, share
+│   │       ├── utils/                ← Auth, rate limiter, email, health logger
+│   │       ├── lambda_handler.py     ← AWS Lambda entry point
+│   │       └── template.yaml         ← SAM deployment config
+│   └── frontend/                     ← React app (AWS Amplify)
+│       ├── src/app/routes/           ← All pages including admin/
+│       ├── src/components/           ← Shared UI + OnboardingTour
+│       └── src/lib/api.ts            ← All API calls
+└── README.md
 ```
 
 ---
@@ -370,3 +481,9 @@ Travelmaster/
 ## License
 
 MIT — built for portfolio demonstration purposes.
+
+---
+
+<p align="center">
+  Built with ☕ and frustration in India 🇮🇳
+</p>
